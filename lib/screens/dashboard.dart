@@ -38,19 +38,19 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  /// Count User Statistics
-  int _countUsers(
-      List<DocumentSnapshot<Map<String, dynamic>>> users, String userStatus) {
-    // Variables
-    String field = USER_STATUS;
-    dynamic status = userStatus;
-    // Check status
-    if (userStatus == 'verified') {
-      field = USER_IS_VERIFIED;
-      status = true;
-    }
-    return users.where((user) => user.data()![field] == status).toList().length;
-  }
+  // /// Count User Statistics
+  // int _countUsers(
+  //     List<DocumentSnapshot<Map<String, dynamic>>> users, String userStatus) {
+  //   // Variables
+  //   String field = USER_STATUS;
+  //   dynamic status = userStatus;
+  //   // Check status
+  //   if (userStatus == 'verified') {
+  //     field = USER_IS_VERIFIED;
+  //     status = true;
+  //   }
+  //   return users.where((user) => user.data()![field] == status).toList().length;
+  // }
 
   @override
   void initState() {
@@ -86,12 +86,6 @@ class _DashboardState extends State<Dashboard> {
                 // Variables
                 final List<DocumentSnapshot<Map<String, dynamic>>> users =
                     snapshot.data!.docs;
-                // G
-                final int totalActiveUsers = _countUsers(users, 'active');
-                final int totalVerifiedUsers = _countUsers(users, 'verified');
-                final int totalFlaggedUsers = _countUsers(users, 'flagged');
-                final int totalBlockedUsers = _countUsers(users, 'blocked');
-
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,

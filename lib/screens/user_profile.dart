@@ -22,11 +22,6 @@ class ProfileScreen extends StatelessWidget {
   List<String> get _getUserGallery {
     List<String> images = [];
     // loop user gallery
-    if (user.userGallery != null) {
-      user.userGallery!.forEach((key, imgUrl) {
-        images.add(imgUrl);
-      });
-    }
     debugPrint('_getUserGallery() -> length: ${images.length}');
     return images;
   }
@@ -177,47 +172,12 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Profile location
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.location_on_outlined, color: Colors.white),
-                    Text("${user.userCountry}, ${user.userLocality}",
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18)),
-                  ]),
+                  const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.location_on_outlined, color: Colors.white),
+                      ]),
                   const SizedBox(height: 5),
-
-                  /// Profile Statistics
-                  Container(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(children: [
-                              /// Show statistics
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    // LIKES
-                                    _showStatistic(
-                                        icon: Icons.favorite_outline,
-                                        title: 'LIKES',
-                                        total: user.userTotalLikes),
-                                    // VISITS
-                                    _showStatistic(
-                                        icon: Icons.remove_red_eye_outlined,
-                                        title: 'VISITS',
-                                        total: user.userTotalVisits),
-                                    // DISLIKES
-                                    _showStatistic(
-                                        icon: Icons.cancel_outlined,
-                                        title: 'DISLIKES',
-                                        total: user.userTotalDisliked),
-                                  ])
-                            ]),
-                          )))
                 ],
               )),
 
@@ -278,14 +238,7 @@ class ProfileScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.grey, fontSize: 18)),
           ),
           const Divider(thickness: 1),
-          // User Bio
-          ListTile(
-              leading: Icon(Icons.info_outline,
-                  color: Theme.of(context).primaryColor),
-              title: const Text('Bio'),
-              trailing: Text(user.userBio)),
 
-          const Divider(thickness: 1),
           // User full name
           ListTile(
               leading: Icon(Icons.person_outline,
@@ -312,33 +265,6 @@ class ProfileScreen extends StatelessWidget {
             trailing: Text('${user.userBirthYear}/'
                 '${user.userBirthMonth}/'
                 '${user.userBirthDay}'), // Date Format: year/month/day
-          ),
-          const Divider(thickness: 1),
-
-          // User School
-          ListTile(
-            leading: Icon(Icons.school_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('School'),
-            trailing: Text(user.userSchool),
-          ),
-          const Divider(thickness: 1),
-
-          // User Job title
-          ListTile(
-            leading:
-                Icon(Icons.work_outline, color: Theme.of(context).primaryColor),
-            title: const Text('Job title'),
-            trailing: Text(user.userJobTitle),
-          ),
-          const Divider(thickness: 1),
-
-          // User location
-          ListTile(
-            leading: Icon(Icons.location_on_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('Location'),
-            trailing: Text("${user.userCountry}, ${user.userLocality}"),
           ),
           const Divider(thickness: 1),
 
@@ -414,25 +340,6 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 30),
         ],
       )),
-    );
-  }
-
-  // Show profile statistic - ex: TOTAL LIKES...
-  Widget _showStatistic(
-      {required IconData icon, required String title, required int total}) {
-    return Row(
-      children: [
-        Icon(icon, size: 40, color: Colors.grey),
-        const SizedBox(width: 5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title),
-            Text("$total",
-                style: const TextStyle(color: Colors.grey, fontSize: 18)),
-          ],
-        )
-      ],
     );
   }
 }

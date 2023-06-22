@@ -197,7 +197,8 @@ class AppModel extends Model {
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=${AppModel().appInfo!.firebaseServerKey}',
+        'Authorization': 'key=',
+        // 'Authorization': 'key=${AppModel().appInfo!.firebaseServerKey}',
       },
       body: jsonEncode(
         <String, dynamic>{

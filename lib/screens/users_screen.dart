@@ -41,7 +41,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                     labelText: "Search users",
-                    hintText: "Search by: User's name, country, city, and id",
+                    hintText: "Search by: User's name, and id",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   onChanged: (query) {
@@ -61,18 +61,6 @@ class _UsersScreenState extends State<UsersScreen> {
                   onSort: (int columnIndex, bool sortAsc) {
                     // Sort by gender
                     _dataSource.sort(USER_GENDER, columnIndex, sortAsc);
-                  }),
-              DataColumn(
-                  label: const Text("Country"),
-                  onSort: (int columnIndex, bool sortAsc) {
-                    // Sort by user's country
-                    _dataSource.sort(USER_COUNTRY, columnIndex, sortAsc);
-                  }),
-              DataColumn(
-                  label: const Text("City"),
-                  onSort: (int columnIndex, bool sortAsc) {
-                    // Sort by user's city
-                    _dataSource.sort(USER_LOCALITY, columnIndex, sortAsc);
                   }),
               const DataColumn(label: Text("User ID")),
               DataColumn(
@@ -193,10 +181,6 @@ class UserDataTableSource extends DataTableSource {
       DataCell(Text(user.userFullname)),
       // User Gender
       DataCell(Text(user.userGender)),
-      // User country
-      DataCell(Text(user.userCountry)),
-      // User city
-      DataCell(Text(user.userLocality)),
       // User User ID
       DataCell(Text(_cutUserID(user.userId))),
       // User Status
