@@ -94,9 +94,9 @@ Widget _drawerHeader(BuildContext context) {
   return Container(
     color: Theme.of(context).primaryColor,
     padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-    child: const Column(
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
+      children: const <Widget>[
         /// App logo
         AppLogo(),
         SizedBox(height: 10),

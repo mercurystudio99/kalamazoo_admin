@@ -96,8 +96,8 @@ class _DashboardState extends State<Dashboard> {
                           width: double.maxFinite,
                           color: Colors.white,
                           padding: const EdgeInsets.all(10.0),
-                          child: const Column(
-                            children: [
+                          child: Column(
+                            children: const [
                               Text("Control Panel",
                                   style: TextStyle(
                                       fontSize: 25,
