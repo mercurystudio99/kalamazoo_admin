@@ -109,16 +109,19 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Center(
                         child: SizedBox(
-                          width: double.maxFinite,
-                          child: DefaultButton(
-                            child: const Text("Import Excel",
-                                style: TextStyle(fontSize: 18)),
-                            onPressed: () {
-                              AppModel().importExcel(
-                                  filepath: 'assets/resources/data.xlsx',
-                                  onSuccess: () {},
-                                  onError: () {});
-                            },
+                          width: 300,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: DefaultButton(
+                              child: const Text("Import Excel to Firebase",
+                                  style: TextStyle(fontSize: 18)),
+                              onPressed: () {
+                                AppModel().importExcel(
+                                    filepath: 'assets/resources/data.xlsx',
+                                    onSuccess: () {},
+                                    onError: () {});
+                              },
+                            ),
                           ),
                         ),
                       ),
