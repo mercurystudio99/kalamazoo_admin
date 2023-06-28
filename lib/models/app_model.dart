@@ -15,6 +15,7 @@ class AppModel extends Model {
   final _firestore = FirebaseFirestore.instance;
   AppInfo? appInfo;
   List<DocumentSnapshot<Map<String, dynamic>>> users = [];
+  List<DocumentSnapshot<Map<String, dynamic>>> restaurants = [];
   int sortColumnIndex = 0;
   bool sortAscending = true;
 
@@ -125,6 +126,21 @@ class AppModel extends Model {
     users = docs;
     notifyListeners();
     debugPrint('Users -> updated!');
+  }
+
+  /// Get Restaurants from database => stream
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
+    return _firestore
+        .collection(C_RESTAURANTS)
+        .orderBy(RESTAURANT_ZIP)
+        .snapshots();
+  }
+
+  /// Update Restaurant list
+  void updateRestaurants(List<DocumentSnapshot<Map<String, dynamic>>> docs) {
+    restaurants = docs;
+    notifyListeners();
+    debugPrint('Restaurants -> updated!');
   }
 
   // Update variables used on table
@@ -244,22 +260,34 @@ class AppModel extends Model {
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     var excel = Excel.decodeBytes(bytes);
 
-    for (var row in excel.tables['Sheet1']!.rows) {
-      var list = row.map((e) => e?.value).toList();
-      final restaurant = <String, dynamic>{
-        'address': list[3].toString(),
-        'businessName': list[2].toString(),
-        'city': list[4].toString(),
-        'email': list[16].toString(),
-        'phone': list[7].toString(),
-        'state': list[5].toString(),
-        'url': list[8].toString(),
-        'zip': list[6].toString()
-      };
-      _firestore
-          .collection('Restaurants')
-          .add(restaurant)
-          .then((DocumentReference doc) => debugPrint("success!"));
+    int count = 0;
+    bool flag = true;
+    for (var row in excel.tables[EXCEL_SHEET]!.rows) {
+      if (flag) {
+        flag = false;
+      } else {
+        var list = row.map((e) => e?.value).toList();
+        final restaurant = <String, dynamic>{
+          'address': list[3].toString(),
+          'businessName': list[2].toString(),
+          'city': list[4].toString(),
+          'email': list[16].toString(),
+          'phone': list[7].toString(),
+          'state': list[5].toString(),
+          'url': list[8].toString(),
+          'zip': list[6].toString()
+        };
+        _firestore
+            .collection(C_RESTAURANTS)
+            .add(restaurant)
+            .then((DocumentReference doc) => count++);
+      }
+    }
+
+    if (count == (excel.tables[EXCEL_SHEET]!.maxRows - 1)) {
+      onSuccess();
+    } else {
+      onError();
     }
   }
 }

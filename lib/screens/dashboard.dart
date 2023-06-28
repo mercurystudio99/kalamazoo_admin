@@ -18,6 +18,9 @@ class _DashboardState extends State<Dashboard> {
   // Variables
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _appInfo;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _users;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _restaurants;
+
+  bool isDisabled = false;
 
   /// Get AppInfo Stream to update UI after changes
   void _getAppInfoUpdates() {
@@ -36,6 +39,16 @@ class _DashboardState extends State<Dashboard> {
     _users!.listen((usersEvent) {
       // Update users
       AppModel().updateUsers(usersEvent.docs);
+    });
+  }
+
+  /// Get Restaurants Stream to listen updates
+  void _getRestaurantsUpdates() {
+    _restaurants = AppModel().getRestaurants();
+    // Listen updates
+    _restaurants!.listen((event) {
+      // Update restaurants
+      AppModel().updateRestaurants(event.docs);
     });
   }
 
@@ -62,13 +75,21 @@ class _DashboardState extends State<Dashboard> {
     // Get updates
     _getUsersUpdates();
     _getAppInfoUpdates();
+    _getRestaurantsUpdates();
   }
 
   @override
   void dispose() {
     _appInfo.drain();
     _users?.drain();
+    _restaurants?.drain();
     super.dispose();
+  }
+
+  void _onPressed() {
+    setState(() {
+      isDisabled = !isDisabled;
+    });
   }
 
   @override
@@ -78,54 +99,161 @@ class _DashboardState extends State<Dashboard> {
         drawer: const MyNavigationDrawer(),
         backgroundColor: Colors.grey.withAlpha(70),
         body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: _users,
+            stream: _restaurants,
             builder: (context, snapshot) {
               // Check data
               if (!snapshot.hasData) {
                 return const Processing();
               } else {
                 // Variables
-                final List<DocumentSnapshot<Map<String, dynamic>>> users =
+                final List<DocumentSnapshot<Map<String, dynamic>>> restaurants =
                     snapshot.data!.docs;
+                final List<Widget> restaurantViews = restaurants
+                    .map((restaurant) => Center(
+                          child: Container(
+                              width: double.maxFinite,
+                              color: Colors.white,
+                              padding: const EdgeInsets.all(10.0),
+                              child: ListTile(
+                                leading: const Icon(Icons.business),
+                                title: Text(
+                                    "${restaurant.data()?[RESTAURANT_BUSINESSNAME]} (${restaurant.data()?[RESTAURANT_URL]})"),
+                                subtitle: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on,
+                                          color: Colors.red,
+                                          size: 12,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          "${restaurant.data()?[RESTAURANT_ADDRESS]}",
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.location_city,
+                                          size: 12,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5, right: 10),
+                                          child: Text(
+                                            "${restaurant.data()?[RESTAURANT_CITY]}, ${restaurant.data()?[RESTAURANT_STATE]}",
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.phone,
+                                          size: 12,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5, right: 10),
+                                          child: Text(
+                                            "${restaurant.data()?[RESTAURANT_PHONE]}",
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.email,
+                                          size: 12,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5, right: 10),
+                                          child: Text(
+                                            "${restaurant.data()?[RESTAURANT_EMAIL]}",
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.fax,
+                                          size: 12,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 5, right: 10),
+                                          child: Text(
+                                            "${restaurant.data()?[RESTAURANT_ZIP]}",
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ))
+                    .toList();
+                final List<Widget> topView = [
+                  Center(
+                    child: Container(
+                      width: double.maxFinite,
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(10.0),
+                      child: const Column(
+                        children: [
+                          Text("Control Panel",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: DefaultButton(
+                          child: const Text("Import Excel to Firebase",
+                              style: TextStyle(fontSize: 18)),
+                          onPressed: () {
+                            if (!isDisabled) {
+                              _onPressed();
+                              AppModel().importExcel(
+                                  filepath: 'assets/resources/data.xlsx',
+                                  onSuccess: () {
+                                    _onPressed();
+                                  },
+                                  onError: () {
+                                    _onPressed();
+                                  });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ];
+                final List<Widget> mainView = [...topView, ...restaurantViews];
+
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Dashboard Header
-                      Center(
-                        child: Container(
-                          width: double.maxFinite,
-                          color: Colors.white,
-                          padding: const EdgeInsets.all(10.0),
-                          child: const Column(
-                            children: [
-                              Text("Control Panel",
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: 300,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: DefaultButton(
-                              child: const Text("Import Excel to Firebase",
-                                  style: TextStyle(fontSize: 18)),
-                              onPressed: () {
-                                AppModel().importExcel(
-                                    filepath: 'assets/resources/data.xlsx',
-                                    onSuccess: () {},
-                                    onError: () {});
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    children: mainView,
                   ),
                 );
               }

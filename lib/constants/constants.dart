@@ -8,6 +8,8 @@ const String APP_NAME = "Kalamazoo App Admin Panel";
 const Color APP_PRIMARY_COLOR = Color.fromARGB(255, 65, 6, 96);
 const Color APP_ACCENT_COLOR = Color.fromARGB(255, 176, 108, 212);
 
+const String EXCEL_SHEET = "Clean Data - 261 Leads-13 Jun";
+
 /// FIREBASE MESSAGING TOPIC
 const NOTIFY_USERS = "NOTIFY_USERS";
 
@@ -32,6 +34,7 @@ const String ADMIN_PASSWORD = "admin_password";
 ///
 const String C_APP_INFO = "AppInfo";
 const String C_USERS = "Users";
+const String C_RESTAURANTS = "Restaurants";
 const String C_FLAGGED_USERS = "FlaggedUsers";
 
 /// DATABASE FIELDS FOR USER COLLECTION  ///
@@ -73,3 +76,12 @@ const String FLAGGED_USER_ID = "flagged_user_id";
 const String FLAG_REASON = "flag_reason";
 const String FLAGGED_BY_USER_ID = "flagged_by_user_id";
 const String TIMESTAMP = "timestamp";
+
+const String RESTAURANT_ADDRESS = "address";
+const String RESTAURANT_BUSINESSNAME = "businessName";
+const String RESTAURANT_CITY = "city";
+const String RESTAURANT_EMAIL = "email";
+const String RESTAURANT_PHONE = "phone";
+const String RESTAURANT_STATE = "state";
+const String RESTAURANT_URL = "url";
+const String RESTAURANT_ZIP = "zip";
