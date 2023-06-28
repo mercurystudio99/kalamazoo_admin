@@ -3,6 +3,7 @@ import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/my_navigation_drawer.dart';
 import 'package:kalamazoo_app_dashboard/widgets/processing.dart';
+import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -96,13 +97,28 @@ class _DashboardState extends State<Dashboard> {
                           width: double.maxFinite,
                           color: Colors.white,
                           padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: const [
+                          child: const Column(
+                            children: [
                               Text("Control Panel",
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold)),
                             ],
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: DefaultButton(
+                            child: const Text("Import Excel",
+                                style: TextStyle(fontSize: 18)),
+                            onPressed: () {
+                              AppModel().importExcel(
+                                  filepath: 'assets/resources/data.xlsx',
+                                  onSuccess: () {},
+                                  onError: () {});
+                            },
                           ),
                         ),
                       ),

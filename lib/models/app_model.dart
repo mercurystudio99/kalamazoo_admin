@@ -7,6 +7,8 @@ import 'package:kalamazoo_app_dashboard/datas/app_info.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:excel/excel.dart';
 
 class AppModel extends Model {
   // Variables
@@ -230,5 +232,34 @@ class AppModel extends Model {
       onError();
       debugPrint('sendPushNotification() -> error: $error');
     });
+  }
+
+  void importExcel({
+    required String filepath,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    ByteData data = await rootBundle.load(filepath);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+
+    for (var row in excel.tables['Sheet1']!.rows) {
+      var list = row.map((e) => e?.value).toList();
+      final restaurant = <String, dynamic>{
+        'address': list[3].toString(),
+        'businessName': list[2].toString(),
+        'city': list[4].toString(),
+        'email': list[16].toString(),
+        'phone': list[7].toString(),
+        'state': list[5].toString(),
+        'url': list[8].toString(),
+        'zip': list[6].toString()
+      };
+      _firestore
+          .collection('Restaurants')
+          .add(restaurant)
+          .then((DocumentReference doc) => debugPrint("success!"));
+    }
   }
 }
