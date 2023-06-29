@@ -172,9 +172,9 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Profile location
-                  Row(
+                  const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.location_on_outlined, color: Colors.white),
                       ]),
                   const SizedBox(height: 5),
