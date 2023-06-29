@@ -4,8 +4,6 @@ import 'package:kalamazoo_app_dashboard/screens/sign_in_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-
-// TODO: Please "scroll down" to see the instructions to fix it.
 import 'firebase_options.dart';
 
 void main() async {
@@ -16,7 +14,6 @@ void main() async {
   /// 👉 Please check the [Documentation - README FIRST] instructions in the
   /// [Admin Panel Table of Contents] at section: [NEW - Firebase initialization for Admin Panel]
   /// in order to fix it and generate the required [firebase_options.dart] for your app.
-  /// TODO:
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
