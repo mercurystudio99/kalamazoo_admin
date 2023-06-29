@@ -143,6 +143,30 @@ class AppModel extends Model {
     debugPrint('Restaurants -> updated!');
   }
 
+  /// Get Categories
+  void getCategories({
+    // callback functions
+    required Function(Map<String, dynamic>) onSuccess,
+  }) async {
+    final snapshots =
+        await _firestore.collection(C_APP_INFO).doc('categories').get();
+    final Map<String, dynamic>? data = snapshots.data();
+    onSuccess(data!);
+  }
+
+  // Update Categories
+  void updateCategories(
+      {required String key,
+      required bool value,
+      // callback functions
+      required VoidCallback onSuccess}) {
+    _firestore
+        .collection(C_APP_INFO)
+        .doc("categories")
+        .update({key: !value}).then((value) => onSuccess(),
+            onError: (e) => debugPrint("Error updating document $e"));
+  }
+
   // Update variables used on table
   void updateOnSort(int columnIndex, bool sortAsc) {
     sortColumnIndex = columnIndex;
