@@ -50,12 +50,12 @@ class _CategoryState extends State<Category> {
     for (var i = 0; i < categoryNames.length; i++) {
       categoryListView.add(Center(
         child: SizedBox(
-          width: 300,
+          width: 350,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
-              child:
-                  Text(categoryNames[i], style: const TextStyle(fontSize: 18)),
+              child: Text("${categoryNames[i]} (${categoryFlags[i]})",
+                  style: const TextStyle(fontSize: 18)),
               onPressed: () {
                 AppModel().updateCategories(
                     key: categoryNames[i],
