@@ -10,13 +10,23 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
-  static Map<String, dynamic> categories = {};
+  static List<String> categoryNames = [];
+  static List<bool> categoryFlags = [];
   static List<Widget> categoryListView = [];
 
   /// Get AppInfo Stream to update UI after changes
   void _getAppInfoUpdates() {
-    AppModel().getCategories(onSuccess: (Map<String, dynamic> result) {
-      categories = result;
+    AppModel().getCategories(onSuccess: (Map<String, dynamic> categories) {
+      categories.forEach((key, value) {
+        categoryNames.add(key);
+        categoryFlags.add(value);
+      });
+    });
+  }
+
+  void _toggleFlag(index) {
+    setState(() {
+      categoryFlags[index] = !categoryFlags[index];
     });
   }
 
@@ -30,28 +40,35 @@ class _CategoryState extends State<Category> {
   @override
   void dispose() {
     categoryListView.clear();
+    categoryNames.clear();
+    categoryFlags.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    categories.forEach((key, value) {
+    for (var i = 0; i < categoryNames.length; i++) {
       categoryListView.add(Center(
         child: SizedBox(
           width: 300,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
-              child: Text(key, style: const TextStyle(fontSize: 18)),
+              child:
+                  Text(categoryNames[i], style: const TextStyle(fontSize: 18)),
               onPressed: () {
-                AppModel()
-                    .updateCategories(key: key, value: value, onSuccess: () {});
+                AppModel().updateCategories(
+                    key: categoryNames[i],
+                    value: categoryFlags[i],
+                    onSuccess: () {
+                      _toggleFlag(i);
+                    });
               },
             ),
           ),
         ),
       ));
-    });
+    }
 
     return Scaffold(
       appBar: AppBar(
