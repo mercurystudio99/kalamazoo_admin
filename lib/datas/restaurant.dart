@@ -1,6 +1,7 @@
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 
 class Restaurant {
+  final String id;
   final String address;
   final String businessName;
   final String city;
@@ -12,6 +13,7 @@ class Restaurant {
 
   // Constructor
   Restaurant({
+    required this.id,
     required this.address,
     required this.businessName,
     required this.city,
@@ -25,6 +27,7 @@ class Restaurant {
   /// factory user object
   factory Restaurant.fromDocument(Map<String, dynamic> doc) {
     return Restaurant(
+        id: doc[RESTAURANT_ID],
         address: doc[RESTAURANT_ADDRESS],
         businessName: doc[RESTAURANT_BUSINESSNAME],
         city: doc[RESTAURANT_CITY] ?? '',

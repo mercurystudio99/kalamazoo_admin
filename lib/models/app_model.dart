@@ -292,14 +292,15 @@ class AppModel extends Model {
       } else {
         var list = row.map((e) => e?.value).toList();
         final restaurant = <String, dynamic>{
-          'address': list[3].toString(),
-          'businessName': list[2].toString(),
-          'city': list[4].toString(),
-          'email': list[16].toString(),
-          'phone': list[7].toString(),
-          'state': list[5].toString(),
-          'url': list[8].toString(),
-          'zip': list[6].toString()
+          RESTAURANT_ID: DateTime.now().millisecondsSinceEpoch,
+          RESTAURANT_ADDRESS: list[3].toString(),
+          RESTAURANT_BUSINESSNAME: list[2].toString(),
+          RESTAURANT_CITY: list[4].toString(),
+          RESTAURANT_EMAIL: list[16].toString(),
+          RESTAURANT_PHONE: list[7].toString(),
+          RESTAURANT_STATE: list[5].toString(),
+          RESTAURANT_URL: list[8].toString(),
+          RESTAURANT_ZIP: list[6].toString()
         };
         _firestore
             .collection(C_RESTAURANTS)

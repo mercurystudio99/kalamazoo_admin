@@ -77,6 +77,7 @@ const String FLAG_REASON = "flag_reason";
 const String FLAGGED_BY_USER_ID = "flagged_by_user_id";
 const String TIMESTAMP = "timestamp";
 
+const String RESTAURANT_ID = "id";
 const String RESTAURANT_ADDRESS = "address";
 const String RESTAURANT_BUSINESSNAME = "businessName";
 const String RESTAURANT_CITY = "city";
