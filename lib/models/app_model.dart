@@ -284,15 +284,15 @@ class AppModel extends Model {
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     var excel = Excel.decodeBytes(bytes);
 
-    int count = 0;
     bool flag = true;
     for (var row in excel.tables[EXCEL_SHEET]!.rows) {
       if (flag) {
         flag = false;
       } else {
         var list = row.map((e) => e?.value).toList();
-        final restaurant = <String, dynamic>{
-          RESTAURANT_ID: DateTime.now().millisecondsSinceEpoch,
+        final docRef = _firestore.collection(C_RESTAURANTS).doc();
+        await docRef.set({
+          RESTAURANT_ID: docRef.id,
           RESTAURANT_ADDRESS: list[3].toString(),
           RESTAURANT_BUSINESSNAME: list[2].toString(),
           RESTAURANT_CITY: list[4].toString(),
@@ -301,18 +301,9 @@ class AppModel extends Model {
           RESTAURANT_STATE: list[5].toString(),
           RESTAURANT_URL: list[8].toString(),
           RESTAURANT_ZIP: list[6].toString()
-        };
-        _firestore
-            .collection(C_RESTAURANTS)
-            .add(restaurant)
-            .then((DocumentReference doc) => count++);
+        });
       }
     }
-
-    if (count == (excel.tables[EXCEL_SHEET]!.maxRows - 1)) {
-      onSuccess();
-    } else {
-      onError();
-    }
+    onSuccess();
   }
 }
