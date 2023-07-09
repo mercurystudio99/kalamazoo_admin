@@ -133,7 +133,7 @@ class AppModel extends Model {
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     return _firestore
         .collection(C_RESTAURANTS)
-        .orderBy(RESTAURANT_ZIP)
+        .orderBy(RESTAURANT_BUSINESSNAME)
         .snapshots();
   }
 
@@ -309,6 +309,7 @@ class AppModel extends Model {
   }
 
   void saveMenu({
+    required String imageUrl,
     required String name,
     required String price,
     // VoidCallback functions
@@ -322,6 +323,7 @@ class AppModel extends Model {
         .doc();
     await docRef.set({
       MENU_ID: docRef.id,
+      MENU_PHOTO_LINK: imageUrl,
       MENU_NAME: name,
       MENU_PRICE: price,
     });

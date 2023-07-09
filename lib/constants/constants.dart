@@ -91,3 +91,4 @@ const String RESTAURANT_ZIP = "zip";
 const String MENU_ID = "id";
 const String MENU_NAME = "name";
 const String MENU_PRICE = "price";
+const String MENU_PHOTO_LINK = "photoLink";

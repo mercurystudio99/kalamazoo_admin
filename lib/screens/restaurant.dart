@@ -3,6 +3,9 @@ import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_card_border.dart';
 import 'package:kalamazoo_app_dashboard/widgets/show_scaffold_msg.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Restaurant extends StatefulWidget {
   const Restaurant({Key? key}) : super(key: key);
@@ -12,11 +15,48 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
+  PlatformFile? _imageFile;
   // Variables
+  final _storage = FirebaseStorage.instance;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+
+  Future getImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+    );
+    if (result == null) return;
+    setState(() {
+      _imageFile = result.files.first;
+    });
+  }
+
+  void _save(
+      {required VoidCallback onCallback,
+      required Function(String) onError}) async {
+    if (_imageFile != null) {
+      Uint8List? fileBytes = _imageFile!.bytes;
+      String filename =
+          DateTime.now().millisecondsSinceEpoch.toString() + _imageFile!.name;
+      var snapshot =
+          await _storage.ref().child('menu/$filename').putData(fileBytes!);
+
+      var url = await snapshot.ref.getDownloadURL();
+
+      AppModel().saveMenu(
+          imageUrl: url.toString(),
+          name: _nameController.text.trim(),
+          price: _priceController.text.trim(),
+          onSuccess: () {
+            onCallback();
+          },
+          onError: () {});
+    } else {
+      onError("Please upload an menu image.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +75,65 @@ class _RestaurantState extends State<Restaurant> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    /// Form
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 30.0,
+                          ),
+                        ],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _imageFile != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.memory(
+                                      Uint8List.fromList(_imageFile!.bytes!),
+                                      width: 300,
+                                      height: 300,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    getImage();
+                                  },
+                                  child: const Icon(
+                                    Icons.camera,
+                                    size: 30,
+                                  ),
+                                ),
+                          GestureDetector(
+                            onTap: () {
+                              getImage();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Text(
+                                'Click here to upload an image!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Form(
                       key: _formKey,
                       child: Column(
@@ -86,18 +184,19 @@ class _RestaurantState extends State<Restaurant> {
                               onPressed: () {
                                 /// Validate form
                                 if (_formKey.currentState!.validate()) {
-                                  AppModel().saveMenu(
-                                      name: _nameController.text.trim(),
-                                      price: _priceController.text.trim(),
-                                      onSuccess: () {
-                                        showScaffoldMessage(
-                                            context: context,
-                                            scaffoldkey: _scaffoldKey,
-                                            bgcolor:
-                                                Theme.of(context).primaryColor,
-                                            message: "Success!");
-                                      },
-                                      onError: () {});
+                                  _save(onCallback: () {
+                                    showScaffoldMessage(
+                                        context: context,
+                                        scaffoldkey: _scaffoldKey,
+                                        bgcolor: Colors.black,
+                                        message: "Success!");
+                                  }, onError: (String text) {
+                                    showScaffoldMessage(
+                                        context: context,
+                                        scaffoldkey: _scaffoldKey,
+                                        bgcolor: Theme.of(context).splashColor,
+                                        message: text);
+                                  });
                                 }
                               },
                             ),
