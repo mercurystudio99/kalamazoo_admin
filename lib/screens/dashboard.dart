@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kalamazoo_app_dashboard/screens/restaurant.dart';
+import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/my_navigation_drawer.dart';
@@ -204,6 +206,14 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ],
                                 ),
+                                onTap: () {
+                                  globals.restaurantID =
+                                      restaurant.data()?[RESTAURANT_ID];
+                                  // Go to restaurant screen
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const Restaurant()));
+                                },
                               )),
                         ))
                     .toList();

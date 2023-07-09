@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/datas/app_info.dart';
+import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
@@ -304,6 +305,26 @@ class AppModel extends Model {
         });
       }
     }
+    onSuccess();
+  }
+
+  void saveMenu({
+    required String name,
+    required String price,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final docRef = _firestore
+        .collection(C_RESTAURANTS)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .doc();
+    await docRef.set({
+      MENU_ID: docRef.id,
+      MENU_NAME: name,
+      MENU_PRICE: price,
+    });
     onSuccess();
   }
 }

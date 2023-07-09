@@ -36,6 +36,7 @@ const String C_APP_INFO = "AppInfo";
 const String C_USERS = "Users";
 const String C_RESTAURANTS = "Restaurants";
 const String C_FLAGGED_USERS = "FlaggedUsers";
+const String C_C_MENU = "Menu";
 
 /// DATABASE FIELDS FOR USER COLLECTION  ///
 ///
@@ -86,3 +87,7 @@ const String RESTAURANT_PHONE = "phone";
 const String RESTAURANT_STATE = "state";
 const String RESTAURANT_URL = "url";
 const String RESTAURANT_ZIP = "zip";
+
+const String MENU_ID = "id";
+const String MENU_NAME = "name";
+const String MENU_PRICE = "price";
