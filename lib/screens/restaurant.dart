@@ -63,6 +63,9 @@ class _RestaurantState extends State<Restaurant> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        title: const Text("Restaurant"),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 30.0),
         child: Center(
