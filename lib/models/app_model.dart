@@ -329,4 +329,18 @@ class AppModel extends Model {
     });
     onSuccess();
   }
+
+  void updateRestaurantImage({
+    required String imageUrl,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final docRef =
+        _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID);
+    await docRef.update({
+      RESTAURANT_IMAGE: imageUrl,
+    });
+    onSuccess();
+  }
 }

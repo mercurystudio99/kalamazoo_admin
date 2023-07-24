@@ -83,6 +83,7 @@ const String RESTAURANT_ADDRESS = "address";
 const String RESTAURANT_BUSINESSNAME = "businessName";
 const String RESTAURANT_CITY = "city";
 const String RESTAURANT_EMAIL = "email";
+const String RESTAURANT_IMAGE = "imageLink";
 const String RESTAURANT_PHONE = "phone";
 const String RESTAURANT_STATE = "state";
 const String RESTAURANT_URL = "url";

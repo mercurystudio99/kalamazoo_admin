@@ -16,6 +16,7 @@ class Restaurant extends StatefulWidget {
 
 class _RestaurantState extends State<Restaurant> {
   PlatformFile? _imageFile;
+  PlatformFile? _restaurantImage;
   // Variables
   final _storage = FirebaseStorage.instance;
   final _formKey = GlobalKey<FormState>();
@@ -30,6 +31,16 @@ class _RestaurantState extends State<Restaurant> {
     if (result == null) return;
     setState(() {
       _imageFile = result.files.first;
+    });
+  }
+
+  Future getRestaurantImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.any,
+    );
+    if (result == null) return;
+    setState(() {
+      _restaurantImage = result.files.first;
     });
   }
 
@@ -55,6 +66,31 @@ class _RestaurantState extends State<Restaurant> {
           onError: () {});
     } else {
       onError("Please upload an menu image.");
+    }
+  }
+
+  void _saveRestaurantImage(
+      {required VoidCallback onCallback,
+      required Function(String) onError}) async {
+    if (_restaurantImage != null) {
+      Uint8List? fileBytes = _restaurantImage!.bytes;
+      String filename = DateTime.now().millisecondsSinceEpoch.toString() +
+          _restaurantImage!.name;
+      var snapshot = await _storage
+          .ref()
+          .child('restaurant/$filename')
+          .putData(fileBytes!);
+
+      var url = await snapshot.ref.getDownloadURL();
+
+      AppModel().updateRestaurantImage(
+          imageUrl: url.toString(),
+          onSuccess: () {
+            onCallback();
+          },
+          onError: () {});
+    } else {
+      onError("Please upload an restaurant image.");
     }
   }
 
@@ -207,6 +243,74 @@ class _RestaurantState extends State<Restaurant> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 50),
+                    Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Column(children: [
+                          _restaurantImage != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.memory(
+                                      Uint8List.fromList(
+                                          _restaurantImage!.bytes!),
+                                      width: 300,
+                                      height: 300,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    getRestaurantImage();
+                                  },
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    size: 40,
+                                  ),
+                                ),
+                          GestureDetector(
+                            onTap: () {
+                              getRestaurantImage();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Text(
+                                'Click here to upload an restaurant image!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          SizedBox(
+                            width: double.maxFinite,
+                            child: DefaultButton(
+                              child: const Text("Save a Restaurant Image",
+                                  style: TextStyle(fontSize: 16)),
+                              onPressed: () {
+                                _saveRestaurantImage(onCallback: () {
+                                  showScaffoldMessage(
+                                      context: context,
+                                      scaffoldkey: _scaffoldKey,
+                                      bgcolor: Colors.black,
+                                      message: "Success!");
+                                }, onError: (String text) {
+                                  showScaffoldMessage(
+                                      context: context,
+                                      scaffoldkey: _scaffoldKey,
+                                      bgcolor: Theme.of(context).splashColor,
+                                      message: text);
+                                });
+                              },
+                            ),
+                          )
+                        ]))
                   ],
                 ),
               ),
