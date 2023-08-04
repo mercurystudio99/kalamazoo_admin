@@ -3,7 +3,6 @@ import 'package:kalamazoo_app_dashboard/datas/user.dart';
 import 'package:kalamazoo_app_dashboard/dialogs/common_dialogs.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/show_scaffold_msg.dart';
-import 'package:kalamazoo_app_dashboard/widgets/user_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -256,17 +255,18 @@ class ProfileScreen extends StatelessWidget {
           const Divider(thickness: 1),
 
           // User Birthday
-          ListTile(
-            leading: Icon(Icons.calendar_today_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('Birthday'),
-            subtitle: Text('Current age: '
-                '${AppModel().calculateUserAge(int.parse(user.userBirthYear))}'),
-            trailing: Text('${user.userBirthYear}/'
-                '${user.userBirthMonth}/'
-                '${user.userBirthDay}'), // Date Format: year/month/day
-          ),
-          const Divider(thickness: 1),
+          if (user.userBirthYear.isNotEmpty)
+            ListTile(
+              leading: Icon(Icons.calendar_today_outlined,
+                  color: Theme.of(context).primaryColor),
+              title: const Text('Birthday'),
+              subtitle: Text('Current age: '
+                  '${AppModel().calculateUserAge(int.parse(user.userBirthYear))}'),
+              trailing: Text('${user.userBirthYear}/'
+                  '${user.userBirthMonth}/'
+                  '${user.userBirthDay}'), // Date Format: year/month/day
+            ),
+          if (user.userBirthYear.isNotEmpty) const Divider(thickness: 1),
 
           // User Phone number
           ListTile(
@@ -319,24 +319,24 @@ class ProfileScreen extends StatelessWidget {
           const Divider(thickness: 1),
 
           // User Status
-          ListTile(
-              leading: Icon(Icons.info_outline,
-                  color: Theme.of(context).primaryColor),
-              title: const Text('User Status'),
-              trailing: UserStatus(status: user.userStatus)),
-          const Divider(thickness: 1),
+          // ListTile(
+          //     leading: Icon(Icons.info_outline,
+          //         color: Theme.of(context).primaryColor),
+          //     title: const Text('User Status'),
+          //     trailing: UserStatus(status: user.userStatus)),
+          // const Divider(thickness: 1),
 
           // User Verified
-          ListTile(
-            leading: Icon(Icons.verified_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('User Verified'),
-            subtitle: const Text(
-                'User is verified automatically when subscribe to VIP account'),
-            trailing: UserStatus(
-                status: user.userIsVerified ? 'verified' : 'Not verified'),
-          ),
-          const Divider(thickness: 1),
+          // ListTile(
+          //   leading: Icon(Icons.verified_outlined,
+          //       color: Theme.of(context).primaryColor),
+          //   title: const Text('User Verified'),
+          //   subtitle: const Text(
+          //       'User is verified automatically when subscribe to VIP account'),
+          //   trailing: UserStatus(
+          //       status: user.userIsVerified ? 'verified' : 'Not verified'),
+          // ),
+          // const Divider(thickness: 1),
           const SizedBox(height: 30),
         ],
       )),
