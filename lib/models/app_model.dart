@@ -317,6 +317,25 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void getMenu({
+    required Function(List<QueryDocumentSnapshot<Map<String, dynamic>>>)
+        onSuccess,
+    required VoidCallback onEmpty,
+  }) {
+    _firestore
+        .collection(C_RESTAURANTS)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        onSuccess(querySnapshot.docs);
+      } else {
+        onEmpty();
+      }
+    });
+  }
+
   void saveMenu({
     required String imageUrl,
     required String name,

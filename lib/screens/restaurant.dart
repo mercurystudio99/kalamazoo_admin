@@ -17,6 +17,7 @@ class Restaurant extends StatefulWidget {
 
 class _RestaurantState extends State<Restaurant> {
   late bool _restaurantImageExist = false;
+  late int _menuCount = 0;
   late Map<String, dynamic> _restaurant = {};
   PlatformFile? _imageFile;
   PlatformFile? _restaurantImage;
@@ -107,11 +108,21 @@ class _RestaurantState extends State<Restaurant> {
     });
   }
 
+  void _getMenu() {
+    AppModel().getMenu(
+      onSuccess: (list) {
+        _menuCount = list.length;
+        setState(() {});
+      },
+      onEmpty: () {},
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getRestaurant();
-    // _getMenu();
+    _getMenu();
   }
 
   @override
@@ -134,6 +145,13 @@ class _RestaurantState extends State<Restaurant> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Text(
+                          "Menu Count: $_menuCount",
+                          style: const TextStyle(fontSize: 20),
+                        )),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -246,6 +264,9 @@ class _RestaurantState extends State<Restaurant> {
                                   _save(onCallback: () {
                                     _nameController.text = '';
                                     _priceController.text = '';
+                                    setState(() {
+                                      _menuCount = _menuCount + 1;
+                                    });
                                     showScaffoldMessage(
                                         context: context,
                                         scaffoldkey: _scaffoldKey,
