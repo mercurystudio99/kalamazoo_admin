@@ -108,10 +108,7 @@ class AppModel extends Model {
 
   /// Get Users from database => stream
   Stream<QuerySnapshot<Map<String, dynamic>>> getUsers() {
-    return _firestore
-        .collection(C_USERS)
-        .orderBy(USER_REG_DATE, descending: true)
-        .snapshots();
+    return _firestore.collection(C_USERS).snapshots();
   }
 
   /// Get Flagged Users Alert from database => stream

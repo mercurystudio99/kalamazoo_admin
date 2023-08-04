@@ -3,7 +3,6 @@ import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/datas/user.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/screens/user_profile.dart';
-import 'package:kalamazoo_app_dashboard/widgets/user_status.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -63,12 +62,12 @@ class _UsersScreenState extends State<UsersScreen> {
                     _dataSource.sort(USER_GENDER, columnIndex, sortAsc);
                   }),
               const DataColumn(label: Text("User ID")),
-              DataColumn(
-                  label: const Text("Status"),
-                  onSort: (int columnIndex, bool sortAsc) {
-                    // Sort by user status
-                    _dataSource.sort(USER_STATUS, columnIndex, sortAsc);
-                  }),
+              // DataColumn(
+              //     label: const Text("Status"),
+              //     onSort: (int columnIndex, bool sortAsc) {
+              //       // Sort by user status
+              //       _dataSource.sort(USER_STATUS, columnIndex, sortAsc);
+              //     }),
               const DataColumn(label: Text("View")),
             ],
             source: _dataSource,
@@ -106,16 +105,6 @@ class UserDataTableSource extends DataTableSource {
       for (var item in allUsers) {
         // Search in name
         if (item[USER_FULLNAME]
-                .toString()
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            // Search in country
-            item[USER_COUNTRY]
-                .toString()
-                .toUpperCase()
-                .contains(query.toUpperCase()) ||
-            // Search in city
-            item[USER_LOCALITY]
                 .toString()
                 .toUpperCase()
                 .contains(query.toUpperCase()) ||
@@ -169,7 +158,7 @@ class UserDataTableSource extends DataTableSource {
       // User profile photo
       DataCell(
         CircleAvatar(
-          backgroundColor: Colors.pink,
+          backgroundColor: Colors.grey,
           backgroundImage: NetworkImage(user.userProfilePhoto),
         ),
         onTap: () {
@@ -184,7 +173,7 @@ class UserDataTableSource extends DataTableSource {
       // User User ID
       DataCell(Text(_cutUserID(user.userId))),
       // User Status
-      DataCell(UserStatus(status: user.userStatus)),
+      // DataCell(UserStatus(status: user.userStatus)),
       // Button actions
       DataCell(
         IconButton(

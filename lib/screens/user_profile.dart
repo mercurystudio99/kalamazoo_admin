@@ -261,7 +261,7 @@ class ProfileScreen extends StatelessWidget {
                 color: Theme.of(context).primaryColor),
             title: const Text('Birthday'),
             subtitle: Text('Current age: '
-                '${AppModel().calculateUserAge(user.userBirthYear)}'),
+                '${AppModel().calculateUserAge(int.parse(user.userBirthYear))}'),
             trailing: Text('${user.userBirthYear}/'
                 '${user.userBirthMonth}/'
                 '${user.userBirthDay}'), // Date Format: year/month/day
@@ -284,24 +284,24 @@ class ProfileScreen extends StatelessWidget {
               trailing: Text(user.userEmail)),
           const Divider(thickness: 1),
 
-          // User Registration date
-          ListTile(
-            leading: Icon(Icons.create_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('Registration date'),
-            trailing: Text(AppModel()
-                .formatDate(user.userRegDate)), // Date Format: year/month/day
-          ),
-          const Divider(thickness: 1),
+          // // User Registration date
+          // ListTile(
+          //   leading: Icon(Icons.create_outlined,
+          //       color: Theme.of(context).primaryColor),
+          //   title: const Text('Registration date'),
+          //   trailing: Text(AppModel()
+          //       .formatDate(user.userRegDate)), // Date Format: year/month/day
+          // ),
+          // const Divider(thickness: 1),
 
-          // User Last active
-          ListTile(
-            leading: Icon(Icons.access_time_outlined,
-                color: Theme.of(context).primaryColor),
-            title: const Text('Last active'),
-            trailing: Text(timeago.format(user.userLastLogin)),
-          ),
-          const Divider(thickness: 1),
+          // // User Last active
+          // ListTile(
+          //   leading: Icon(Icons.access_time_outlined,
+          //       color: Theme.of(context).primaryColor),
+          //   title: const Text('Last active'),
+          //   trailing: Text(timeago.format(user.userLastLogin)),
+          // ),
+          // const Divider(thickness: 1),
 
           // User ID
           ListTile(

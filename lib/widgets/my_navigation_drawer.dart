@@ -64,16 +64,16 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
                   MaterialPageRoute(builder: (context) => const UsersScreen()));
             },
           ),
-          const Divider(height: 0),
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: Text("Push Notifications", style: _menuTextStyle),
-            onTap: () {
-              // Go to push notifications screen
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PushNotifications()));
-            },
-          ),
+          // const Divider(height: 0),
+          // ListTile(
+          //   leading: const Icon(Icons.notifications_outlined),
+          //   title: Text("Push Notifications", style: _menuTextStyle),
+          //   onTap: () {
+          //     // Go to push notifications screen
+          //     Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (context) => const PushNotifications()));
+          //   },
+          // ),
           const Divider(height: 0),
           ListTile(
             leading: const Icon(Icons.person_outline),

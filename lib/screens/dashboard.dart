@@ -232,31 +232,31 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                   ),
-                  Center(
-                    child: SizedBox(
-                      width: 300,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: DefaultButton(
-                          child: const Text("Import Excel to Firebase",
-                              style: TextStyle(fontSize: 18)),
-                          onPressed: () {
-                            if (!isDisabled) {
-                              _onPressed();
-                              AppModel().importExcel(
-                                  filepath: 'assets/resources/data.xlsx',
-                                  onSuccess: () {
-                                    _onPressed();
-                                  },
-                                  onError: () {
-                                    _onPressed();
-                                  });
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Center(
+                  //   child: SizedBox(
+                  //     width: 300,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(10),
+                  //       child: DefaultButton(
+                  //         child: const Text("Import Excel to Firebase",
+                  //             style: TextStyle(fontSize: 18)),
+                  //         onPressed: () {
+                  //           if (!isDisabled) {
+                  //             _onPressed();
+                  //             AppModel().importExcel(
+                  //                 filepath: 'assets/resources/data.xlsx',
+                  //                 onSuccess: () {
+                  //                   _onPressed();
+                  //                 },
+                  //                 onError: () {
+                  //                   _onPressed();
+                  //                 });
+                  //           }
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ];
                 final List<Widget> mainView = [...topView, ...restaurantViews];
 

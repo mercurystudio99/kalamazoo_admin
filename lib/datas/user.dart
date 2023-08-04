@@ -6,9 +6,9 @@ class User {
   final String userProfilePhoto;
   final String userFullname;
   final String userGender;
-  final int userBirthDay;
-  final int userBirthMonth;
-  final int userBirthYear;
+  final String userBirthDay;
+  final String userBirthMonth;
+  final String userBirthYear;
   // final String userSchool;
   // final String userJobTitle;
   // final String userBio;
@@ -20,8 +20,8 @@ class User {
   final String userStatus;
   final bool userIsVerified;
   // final String userLevel;
-  final DateTime userRegDate;
-  final DateTime userLastLogin;
+  // final DateTime userRegDate;
+  // final DateTime userLastLogin;
   // final String userDeviceToken;
   // final int userTotalLikes;
   // final int userTotalVisits;
@@ -51,8 +51,8 @@ class User {
     required this.userStatus,
     required this.userIsVerified,
     // required this.userLevel,
-    required this.userRegDate,
-    required this.userLastLogin,
+    // required this.userRegDate,
+    // required this.userLastLogin,
     // required this.userDeviceToken,
     // required this.userTotalLikes,
     // required this.userTotalVisits,
@@ -63,12 +63,12 @@ class User {
   factory User.fromDocument(Map<String, dynamic> doc) {
     return User(
       userId: doc[USER_ID],
-      userProfilePhoto: doc[USER_PROFILE_PHOTO],
+      userProfilePhoto: doc[USER_PROFILE_PHOTO] ?? '',
       userFullname: doc[USER_FULLNAME] ?? '',
-      userGender: doc[USER_GENDER],
-      userBirthDay: doc[USER_BIRTH_DAY],
-      userBirthMonth: doc[USER_BIRTH_MONTH],
-      userBirthYear: doc[USER_BIRTH_YEAR],
+      userGender: doc[USER_GENDER] ?? '',
+      userBirthDay: doc[USER_BIRTH_DAY] ?? '',
+      userBirthMonth: doc[USER_BIRTH_MONTH] ?? '',
+      userBirthYear: doc[USER_BIRTH_YEAR] ?? '',
       // userSchool: doc[USER_SCHOOL] ?? '',
       // userJobTitle: doc[USER_JOB_TITLE] ?? '',
       // userBio: doc[USER_BIO],
@@ -79,11 +79,11 @@ class User {
       // userLocality: doc[USER_LOCALITY] ?? '',
       // userGeoPoint: doc[USER_GEO_POINT]['geopoint'],
       // userSettings: doc[USER_SETTINGS],
-      userStatus: doc[USER_STATUS],
+      userStatus: doc[USER_STATUS] ?? '',
       userIsVerified: doc[USER_IS_VERIFIED] ?? false,
       // userLevel: doc[USER_LEVEL],
-      userRegDate: doc[USER_REG_DATE].toDate(), // Firestore Timestamp
-      userLastLogin: doc[USER_LAST_LOGIN].toDate(), // Firestore Timestamp
+      // userRegDate: doc[USER_REG_DATE].toDate(), // Firestore Timestamp
+      // userLastLogin: doc[USER_LAST_LOGIN].toDate(), // Firestore Timestamp
       // userDeviceToken: doc[USER_DEVICE_TOKEN] ?? '',
       // userTotalLikes: doc[USER_TOTAL_LIKES] ?? 0,
       // userTotalVisits: doc[USER_TOTAL_VISITS] ?? 0,
