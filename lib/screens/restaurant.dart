@@ -1,3 +1,4 @@
+import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_card_border.dart';
@@ -15,6 +16,8 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
+  late bool _restaurantImageExist = false;
+  late Map<String, dynamic> _restaurant = {};
   PlatformFile? _imageFile;
   PlatformFile? _restaurantImage;
   // Variables
@@ -94,13 +97,30 @@ class _RestaurantState extends State<Restaurant> {
     }
   }
 
+  void _getRestaurant() {
+    AppModel().getRestaurantByID(onSuccess: (Map<String, dynamic>? data) {
+      _restaurant = data!;
+      if (data[RESTAURANT_IMAGE] != null) {
+        _restaurantImageExist = true;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getRestaurant();
+    // _getMenu();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: const Text("Restaurant"),
+        title: Text(_restaurant[RESTAURANT_BUSINESSNAME] ?? "Restaurant"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 30.0),
@@ -224,6 +244,8 @@ class _RestaurantState extends State<Restaurant> {
                                 /// Validate form
                                 if (_formKey.currentState!.validate()) {
                                   _save(onCallback: () {
+                                    _nameController.text = '';
+                                    _priceController.text = '';
                                     showScaffoldMessage(
                                         context: context,
                                         scaffoldkey: _scaffoldKey,
@@ -288,28 +310,32 @@ class _RestaurantState extends State<Restaurant> {
                             ),
                           ),
                           const SizedBox(height: 15),
-                          SizedBox(
-                            width: double.maxFinite,
-                            child: DefaultButton(
-                              child: const Text("Save a Restaurant Image",
-                                  style: TextStyle(fontSize: 16)),
-                              onPressed: () {
-                                _saveRestaurantImage(onCallback: () {
-                                  showScaffoldMessage(
-                                      context: context,
-                                      scaffoldkey: _scaffoldKey,
-                                      bgcolor: Colors.black,
-                                      message: "Success!");
-                                }, onError: (String text) {
-                                  showScaffoldMessage(
-                                      context: context,
-                                      scaffoldkey: _scaffoldKey,
-                                      bgcolor: Theme.of(context).splashColor,
-                                      message: text);
-                                });
-                              },
-                            ),
-                          )
+                          if (!_restaurantImageExist)
+                            SizedBox(
+                              width: double.maxFinite,
+                              child: DefaultButton(
+                                child: const Text("Save a Restaurant Image",
+                                    style: TextStyle(fontSize: 16)),
+                                onPressed: () {
+                                  _saveRestaurantImage(onCallback: () {
+                                    setState(() {
+                                      _restaurantImageExist = true;
+                                    });
+                                    showScaffoldMessage(
+                                        context: context,
+                                        scaffoldkey: _scaffoldKey,
+                                        bgcolor: Colors.black,
+                                        message: "Success!");
+                                  }, onError: (String text) {
+                                    showScaffoldMessage(
+                                        context: context,
+                                        scaffoldkey: _scaffoldKey,
+                                        bgcolor: Theme.of(context).splashColor,
+                                        message: text);
+                                  });
+                                },
+                              ),
+                            )
                         ]))
                   ],
                 ),

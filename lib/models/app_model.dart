@@ -126,6 +126,18 @@ class AppModel extends Model {
     debugPrint('Users -> updated!');
   }
 
+  void getRestaurantByID({
+    required Function(Map<String, dynamic>?) onSuccess,
+  }) {
+    _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID).get().then(
+      (docSnapshot) {
+        Map<String, dynamic>? data = docSnapshot.data();
+        onSuccess(data);
+      },
+      onError: (e) => debugPrint("Error completing: $e"),
+    );
+  }
+
   /// Get Restaurants from database => stream
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     return _firestore
