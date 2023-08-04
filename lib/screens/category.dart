@@ -21,6 +21,7 @@ class _CategoryState extends State<Category> {
         categoryNames.add(key);
         categoryFlags.add(value);
       });
+      setState(() {});
     });
   }
 
@@ -47,6 +48,7 @@ class _CategoryState extends State<Category> {
 
   @override
   Widget build(BuildContext context) {
+    categoryListView = [];
     for (var i = 0; i < categoryNames.length; i++) {
       categoryListView.add(Center(
         child: SizedBox(
