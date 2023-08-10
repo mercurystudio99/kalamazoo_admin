@@ -27,6 +27,12 @@ class _RestaurantState extends State<Restaurant> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  static List<Map<String, dynamic>> categories = [];
+
+  static List<String> listCategory = <String>['None'];
+  String category = '';
 
   Future getImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -60,15 +66,40 @@ class _RestaurantState extends State<Restaurant> {
 
       var url = await snapshot.ref.getDownloadURL();
 
+      String categoryID = '';
+      for (var element in categories) {
+        if (element[CATEGORY_NAME] == category) {
+          categoryID = element[CATEGORY_ID];
+        }
+      }
+
       AppModel().saveMenu(
           imageUrl: url.toString(),
           name: _nameController.text.trim(),
           price: _priceController.text.trim(),
+          desc: _descriptionController.text.trim(),
+          category: categoryID,
           onSuccess: () {
             onCallback();
           },
           onError: () {});
     } else {
+      // String categoryID = '';
+      // for (var element in categories) {
+      //   if (element[CATEGORY_NAME] == category) {
+      //     categoryID = element[CATEGORY_ID];
+      //   }
+      // }
+      // AppModel().saveMenu(
+      //     imageUrl: '',
+      //     name: _nameController.text.trim(),
+      //     price: _priceController.text.trim(),
+      //     desc: _descriptionController.text.trim(),
+      //     category: categoryID,
+      //     onSuccess: () {
+      //       onCallback();
+      //     },
+      //     onError: () {});
       onError("Please upload an menu image.");
     }
   }
@@ -118,11 +149,26 @@ class _RestaurantState extends State<Restaurant> {
     );
   }
 
+  void _getFoodCategory() {
+    AppModel().getFoodCategories(
+      onSuccess: (List<Map<String, dynamic>> param) {
+        categories = param;
+        for (var element in categories) {
+          listCategory.add(element[CATEGORY_NAME]);
+        }
+        setState(() {});
+      },
+      onEmpty: () {},
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    category = listCategory.first;
     _getRestaurant();
     _getMenu();
+    _getFoodCategory();
   }
 
   @override
@@ -251,6 +297,47 @@ class _RestaurantState extends State<Restaurant> {
                               }
                               return null;
                             },
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: _descriptionController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              hintText: "Enter menu description.",
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              prefixIcon: const Icon(Icons.description),
+                            ),
+                            validator: (desc) {
+                              if (desc?.isEmpty ?? true) {
+                                return "Please enter a menu description.";
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          DropdownButton<String>(
+                            underline: const SizedBox(
+                              width: 1,
+                            ),
+                            value: category,
+                            borderRadius: BorderRadius.circular(10.0),
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            elevation: 16,
+                            onChanged: (String? value) {
+                              setState(() {
+                                category = value!;
+                              });
+                            },
+                            items: listCategory
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
                           const SizedBox(height: 20),
                           SizedBox(

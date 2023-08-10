@@ -177,6 +177,34 @@ class AppModel extends Model {
             onError: (e) => debugPrint("Error updating document $e"));
   }
 
+  /// Get Food Categories
+  void getFoodCategories({
+    required Function(List<Map<String, dynamic>>) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    final snapshots = await _firestore.collection(C_CATEGORIES).get();
+    if (snapshots.docs.isEmpty) {
+      onEmpty();
+    } else {
+      List<Map<String, dynamic>> list = [];
+      for (var element in snapshots.docs) {
+        list.add(element.data());
+      }
+      onSuccess(list);
+    }
+  }
+
+  // Set Food Categories
+  void setFoodCategories(
+      {required String name, required VoidCallback onSuccess}) async {
+    final docRef = _firestore.collection(C_CATEGORIES).doc();
+    await docRef.set({
+      CATEGORY_ID: docRef.id,
+      CATEGORY_NAME: name,
+    });
+    onSuccess();
+  }
+
   // Update variables used on table
   void updateOnSort(int columnIndex, bool sortAsc) {
     sortColumnIndex = columnIndex;
@@ -340,6 +368,8 @@ class AppModel extends Model {
     required String imageUrl,
     required String name,
     required String price,
+    required String desc,
+    required String category,
     // VoidCallback functions
     required VoidCallback onSuccess,
     required VoidCallback onError,
@@ -349,12 +379,24 @@ class AppModel extends Model {
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .doc();
-    await docRef.set({
-      MENU_ID: docRef.id,
-      MENU_PHOTO_LINK: imageUrl,
-      MENU_NAME: name,
-      MENU_PRICE: price,
-    });
+    if (category.isEmpty) {
+      await docRef.set({
+        MENU_ID: docRef.id,
+        MENU_PHOTO_LINK: imageUrl,
+        MENU_NAME: name,
+        MENU_PRICE: price,
+        MENU_DESCRIPTION: desc,
+      });
+    } else {
+      await docRef.set({
+        MENU_ID: docRef.id,
+        MENU_PHOTO_LINK: imageUrl,
+        MENU_NAME: name,
+        MENU_PRICE: price,
+        MENU_DESCRIPTION: desc,
+        MENU_CATEGORY: category,
+      });
+    }
     onSuccess();
   }
 
