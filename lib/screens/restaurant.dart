@@ -84,23 +84,23 @@ class _RestaurantState extends State<Restaurant> {
           },
           onError: () {});
     } else {
-      // String categoryID = '';
-      // for (var element in categories) {
-      //   if (element[CATEGORY_NAME] == category) {
-      //     categoryID = element[CATEGORY_ID];
-      //   }
-      // }
-      // AppModel().saveMenu(
-      //     imageUrl: '',
-      //     name: _nameController.text.trim(),
-      //     price: _priceController.text.trim(),
-      //     desc: _descriptionController.text.trim(),
-      //     category: categoryID,
-      //     onSuccess: () {
-      //       onCallback();
-      //     },
-      //     onError: () {});
-      onError("Please upload an menu image.");
+      String categoryID = '';
+      for (var element in categories) {
+        if (element[CATEGORY_NAME] == category) {
+          categoryID = element[CATEGORY_ID];
+        }
+      }
+      AppModel().saveMenu(
+          imageUrl: '',
+          name: _nameController.text.trim(),
+          price: _priceController.text.trim(),
+          desc: _descriptionController.text.trim(),
+          category: categoryID,
+          onSuccess: () {
+            onCallback();
+          },
+          onError: () {});
+      // onError("Please upload an menu image.");
     }
   }
 
@@ -342,7 +342,9 @@ class _RestaurantState extends State<Restaurant> {
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
-                                child: Text(value),
+                                child: Text(value.length < 30
+                                    ? value
+                                    : value.substring(0, 28) + '..'),
                               );
                             }).toList(),
                           ),
@@ -358,6 +360,7 @@ class _RestaurantState extends State<Restaurant> {
                                   _save(onCallback: () {
                                     _nameController.text = '';
                                     _priceController.text = '';
+                                    _descriptionController.text = '';
                                     setState(() {
                                       _menuCount = _menuCount + 1;
                                     });

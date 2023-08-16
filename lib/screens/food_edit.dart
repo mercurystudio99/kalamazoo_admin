@@ -165,7 +165,9 @@ class _FoodEditState extends State<FoodEdit> {
                     listCategory.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value.length < 30
+                        ? value
+                        : value.substring(0, 28) + '..'),
                   );
                 }).toList(),
               ))),
