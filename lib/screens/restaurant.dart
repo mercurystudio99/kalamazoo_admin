@@ -172,6 +172,13 @@ class _RestaurantState extends State<Restaurant> {
   }
 
   @override
+  void dispose() {
+    listCategory = <String>['None'];
+    categories.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,

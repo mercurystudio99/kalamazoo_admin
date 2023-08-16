@@ -1,7 +1,9 @@
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
+import 'package:kalamazoo_app_dashboard/screens/food_edit.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantEdit extends StatefulWidget {
   // Variables
@@ -24,6 +26,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
   final _zipController = TextEditingController();
 
   Map<String, dynamic> info = {};
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> foodInfo = [];
 
   void _getRestaurantByID() {
     AppModel().getRestaurantByID(onSuccess: (param) {
@@ -40,10 +43,20 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     });
   }
 
+  void _getFoods() {
+    AppModel().getMenu(
+        onSuccess: (param) {
+          foodInfo = param;
+          setState(() {});
+        },
+        onEmpty: () {});
+  }
+
   @override
   void initState() {
     super.initState();
     _getRestaurantByID();
+    _getFoods();
   }
 
   @override
@@ -54,6 +67,16 @@ class _RestaurantEditState extends State<RestaurantEdit> {
   @override
   Widget build(BuildContext context) {
     List<Widget> editView = [];
+    editView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text('Restaurant Information',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 22)))),
+    ));
+
     editView.add(Center(
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 2,
@@ -269,6 +292,53 @@ class _RestaurantEditState extends State<RestaurantEdit> {
           )),
     ));
 
+    List<Widget> menuView = [];
+    menuView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text('Food Information',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 22)))),
+    ));
+    if (foodInfo.isNotEmpty) {
+      for (var element in foodInfo) {
+        var info = element.data();
+        menuView.add(Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: ListTile(
+                    leading: const Icon(Icons.menu_book),
+                    title: Text(info[MENU_NAME]),
+                    subtitle: Text("\$${info[MENU_PRICE]}"),
+                    trailing: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  FoodEdit(id: info[MENU_ID])));
+                        },
+                        icon: const Icon(Icons.edit)),
+                  ))),
+        ));
+      }
+    } else {
+      menuView.add(Center(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text('No menu', style: TextStyle(fontSize: 15)))),
+      ));
+    }
+    menuView.add(Center(
+      child:
+          SizedBox(width: MediaQuery.of(context).size.width / 2, height: 100),
+    ));
+
+    List<Widget> listView = [...editView, ...menuView];
     return Scaffold(
       appBar: AppBar(
         title: const Text("Restaurant Edit"),
@@ -277,7 +347,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
         padding: const EdgeInsets.only(top: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: editView,
+          children: listView,
         ),
       ),
     );

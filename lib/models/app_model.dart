@@ -454,6 +454,46 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void getFood({
+    required String id,
+    required Function(Map<String, dynamic>?) onSuccess,
+  }) {
+    _firestore
+        .collection(C_RESTAURANTS)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .doc(id)
+        .get()
+        .then(
+      (docSnapshot) {
+        Map<String, dynamic>? data = docSnapshot.data();
+        onSuccess(data);
+      },
+      onError: (e) => debugPrint("Error completing: $e"),
+    );
+  }
+
+  void setFood(
+      {required String id,
+      required String name,
+      required String price,
+      required String desc,
+      required String category,
+      required VoidCallback onSuccess}) async {
+    final docRef = _firestore
+        .collection(C_RESTAURANTS)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .doc(id);
+    await docRef.update({
+      MENU_NAME: name,
+      MENU_PRICE: price,
+      MENU_DESCRIPTION: desc,
+      MENU_CATEGORY: category,
+    });
+    onSuccess();
+  }
+
   void updateRestaurantImage({
     required String imageUrl,
     // VoidCallback functions
