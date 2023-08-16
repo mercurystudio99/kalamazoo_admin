@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kalamazoo_app_dashboard/screens/restaurant.dart';
+import 'package:kalamazoo_app_dashboard/screens/restaurant_edit.dart';
 import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
@@ -206,6 +207,18 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ],
                                 ),
+                                trailing: IconButton(
+                                    onPressed: () {
+                                      globals.restaurantID =
+                                          restaurant.data()?[RESTAURANT_ID];
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RestaurantEdit(
+                                                      id: restaurant.data()?[
+                                                          RESTAURANT_ID])));
+                                    },
+                                    icon: const Icon(Icons.edit)),
                                 onTap: () {
                                   globals.restaurantID =
                                       restaurant.data()?[RESTAURANT_ID];

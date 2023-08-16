@@ -138,6 +138,31 @@ class AppModel extends Model {
     );
   }
 
+  void setRestaurantByID(
+      {required String id,
+      required String name,
+      required String address,
+      required String city,
+      required String email,
+      required String phone,
+      required String state,
+      required String url,
+      required String zip,
+      required VoidCallback onSuccess}) async {
+    final docRef = _firestore.collection(C_RESTAURANTS).doc(id);
+    await docRef.update({
+      RESTAURANT_BUSINESSNAME: name,
+      RESTAURANT_ADDRESS: address,
+      RESTAURANT_CITY: city,
+      RESTAURANT_EMAIL: email,
+      RESTAURANT_PHONE: phone,
+      RESTAURANT_STATE: state,
+      RESTAURANT_URL: url,
+      RESTAURANT_ZIP: zip,
+    });
+    onSuccess();
+  }
+
   /// Get Restaurants from database => stream
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     return _firestore
