@@ -194,12 +194,41 @@ class AppModel extends Model {
     }
   }
 
+  void getFoodCategory({
+    required String id,
+    required Function(Map<String, dynamic>?) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    if (id.isNotEmpty) {
+      final snapshots = await _firestore.collection(C_CATEGORIES).doc(id).get();
+      if (snapshots.data()!.isEmpty) {
+        onEmpty();
+      } else {
+        onSuccess(snapshots.data());
+      }
+    } else {
+      onEmpty();
+    }
+  }
+
   // Set Food Categories
   void setFoodCategories(
       {required String name, required VoidCallback onSuccess}) async {
     final docRef = _firestore.collection(C_CATEGORIES).doc();
     await docRef.set({
       CATEGORY_ID: docRef.id,
+      CATEGORY_NAME: name,
+    });
+    onSuccess();
+  }
+
+  // Set Food Category
+  void setFoodCategory(
+      {required String id,
+      required String name,
+      required VoidCallback onSuccess}) async {
+    final docRef = _firestore.collection(C_CATEGORIES).doc(id);
+    await docRef.update({
       CATEGORY_NAME: name,
     });
     onSuccess();

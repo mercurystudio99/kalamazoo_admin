@@ -1,25 +1,29 @@
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
-import 'package:kalamazoo_app_dashboard/screens/food_category_edit.dart';
 import 'package:flutter/material.dart';
 
-class FoodCategory extends StatefulWidget {
-  const FoodCategory({Key? key}) : super(key: key);
+class FoodCategoryEdit extends StatefulWidget {
+  // Variables
+  final String id;
+
+  const FoodCategoryEdit({Key? key, required this.id}) : super(key: key);
 
   @override
-  _FoodCategoryState createState() => _FoodCategoryState();
+  _FoodCategoryEditState createState() => _FoodCategoryEditState();
 }
 
-class _FoodCategoryState extends State<FoodCategory> {
-  static List<Map<String, dynamic>> categories = [];
-
+class _FoodCategoryEditState extends State<FoodCategoryEdit> {
   final _nameController = TextEditingController();
 
+  late String name = '';
+
   void _getFoodCategory() {
-    AppModel().getFoodCategories(
-      onSuccess: (List<Map<String, dynamic>> param) {
-        categories = param;
+    AppModel().getFoodCategory(
+      id: widget.id,
+      onSuccess: (param) {
+        name = param![CATEGORY_NAME];
+        _nameController.text = name;
         setState(() {});
       },
       onEmpty: () {},
@@ -39,8 +43,6 @@ class _FoodCategoryState extends State<FoodCategory> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> listView = [];
-
     List<Widget> editView = [];
     editView.add(Center(
       child: SizedBox(
@@ -72,13 +74,13 @@ class _FoodCategoryState extends State<FoodCategory> {
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
               child:
-                  const Text("Add a category", style: TextStyle(fontSize: 18)),
+                  const Text("Save a category", style: TextStyle(fontSize: 18)),
               onPressed: () {
                 if (_nameController.text.trim() == '') return;
-                AppModel().setFoodCategories(
+                AppModel().setFoodCategory(
+                    id: widget.id,
                     name: _nameController.text.trim(),
                     onSuccess: () {
-                      _nameController.text = '';
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Success!')),
                       );
@@ -89,37 +91,15 @@ class _FoodCategoryState extends State<FoodCategory> {
           )),
     ));
 
-    List<Widget> categoryView = [];
-    for (var i = 0; i < categories.length; i++) {
-      categoryView.add(Center(
-        child: SizedBox(
-            width: 350,
-            child: ListTile(
-              title: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(categories[i][CATEGORY_NAME]),
-              ),
-              trailing: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            FoodCategoryEdit(id: categories[i][CATEGORY_ID])));
-                  },
-                  icon: const Icon(Icons.edit)),
-            )),
-      ));
-    }
-
-    listView = [...editView, ...categoryView];
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Food Categories"),
+        title: const Text("Food Category Edit"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: listView,
+          children: editView,
         ),
       ),
     );
