@@ -507,4 +507,22 @@ class AppModel extends Model {
     });
     onSuccess();
   }
+
+  void updateFoodImage({
+    required String id,
+    required String imageUrl,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final docRef = _firestore
+        .collection(C_RESTAURANTS)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .doc(id);
+    await docRef.update({
+      MENU_PHOTO_LINK: imageUrl,
+    });
+    onSuccess();
+  }
 }
