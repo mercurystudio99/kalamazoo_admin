@@ -207,7 +207,10 @@ class AppModel extends Model {
     required Function(List<Map<String, dynamic>>) onSuccess,
     required VoidCallback onEmpty,
   }) async {
-    final snapshots = await _firestore.collection(C_CATEGORIES).get();
+    final snapshots = await _firestore
+        .collection(C_CATEGORIES)
+        .orderBy(CATEGORY_NAME, descending: false)
+        .get();
     if (snapshots.docs.isEmpty) {
       onEmpty();
     } else {
