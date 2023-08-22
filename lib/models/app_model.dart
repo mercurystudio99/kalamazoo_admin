@@ -402,6 +402,33 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void exportExcel({
+    required String filepath,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final snapshots = await _firestore.collection(C_RESTAURANTS).get();
+
+    ByteData data = await rootBundle.load(filepath);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+
+    Sheet sheetObject = excel['Sheet1'];
+
+    var count = 0;
+    for (var snapshot in snapshots.docs) {
+      List<String> dataList = [
+        snapshot.data()[RESTAURANT_ID],
+        snapshot.data()[RESTAURANT_BUSINESSNAME]
+      ];
+      sheetObject.insertRowIterables(dataList, ++count);
+    }
+    excel.save(fileName: 'result.xlsx');
+
+    onSuccess();
+  }
+
   void getMenu({
     required Function(List<QueryDocumentSnapshot<Map<String, dynamic>>>)
         onSuccess,

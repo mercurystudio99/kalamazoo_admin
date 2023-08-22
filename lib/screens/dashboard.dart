@@ -251,12 +251,12 @@ class _DashboardState extends State<Dashboard> {
                   //     child: Padding(
                   //       padding: const EdgeInsets.all(10),
                   //       child: DefaultButton(
-                  //         child: const Text("Import Excel to Firebase",
+                  //         child: const Text("Export to Excel",
                   //             style: TextStyle(fontSize: 18)),
                   //         onPressed: () {
                   //           if (!isDisabled) {
                   //             _onPressed();
-                  //             AppModel().importExcel(
+                  //             AppModel().exportExcel(
                   //                 filepath: 'assets/resources/data.xlsx',
                   //                 onSuccess: () {
                   //                   _onPressed();
