@@ -411,24 +411,20 @@ class AppModel extends Model {
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     var excel = Excel.decodeBytes(bytes);
 
-    var count = 0;
     for (var row in excel.tables['Sheet1']!.rows) {
-      count++;
-      if (count >= 290 && count < 825) {
-        var list = row.map((e) => e?.value).toList();
-        if (list[0].toString().trim().isEmpty) continue;
-        final docRef = _firestore
-            .collection(C_RESTAURANTS)
-            .doc(list[0].toString().trim())
-            .collection(C_C_MENU)
-            .doc();
-        await docRef.set({
-          MENU_ID: docRef.id,
-          MENU_NAME: list[6].toString(),
-          MENU_DESCRIPTION: list[7].toString(),
-          MENU_PRICE: list[8].toString()
-        });
-      }
+      var list = row.map((e) => e?.value).toList();
+      if (list[0].toString().trim().isEmpty) continue;
+      final docRef = _firestore
+          .collection(C_RESTAURANTS)
+          .doc(list[0].toString().trim())
+          .collection(C_C_MENU)
+          .doc();
+      await docRef.set({
+        MENU_ID: docRef.id,
+        MENU_NAME: list[6].toString(),
+        MENU_DESCRIPTION: list[7].toString(),
+        MENU_PRICE: list[8].toString()
+      });
     }
     onSuccess();
   }
