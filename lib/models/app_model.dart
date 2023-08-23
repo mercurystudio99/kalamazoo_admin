@@ -369,6 +369,38 @@ class AppModel extends Model {
     });
   }
 
+  // void importExcel({
+  //   required String filepath,
+  //   // VoidCallback functions
+  //   required VoidCallback onSuccess,
+  //   required VoidCallback onError,
+  // }) async {
+  //   ByteData data = await rootBundle.load(filepath);
+  //   var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  //   var excel = Excel.decodeBytes(bytes);
+
+  //   bool flag = true;
+  //   for (var row in excel.tables[EXCEL_SHEET]!.rows) {
+  //     if (flag) {
+  //       flag = false;
+  //     } else {
+  //       var list = row.map((e) => e?.value).toList();
+  //       final docRef = _firestore.collection(C_RESTAURANTS).doc();
+  //       await docRef.set({
+  //         RESTAURANT_ID: docRef.id,
+  //         RESTAURANT_ADDRESS: list[3].toString(),
+  //         RESTAURANT_BUSINESSNAME: list[2].toString(),
+  //         RESTAURANT_CITY: list[4].toString(),
+  //         RESTAURANT_EMAIL: list[16].toString(),
+  //         RESTAURANT_PHONE: list[7].toString(),
+  //         RESTAURANT_STATE: list[5].toString(),
+  //         RESTAURANT_URL: list[8].toString(),
+  //         RESTAURANT_ZIP: list[6].toString()
+  //       });
+  //     }
+  //   }
+  //   onSuccess();
+  // }
   void importExcel({
     required String filepath,
     // VoidCallback functions
@@ -379,23 +411,22 @@ class AppModel extends Model {
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     var excel = Excel.decodeBytes(bytes);
 
-    bool flag = true;
-    for (var row in excel.tables[EXCEL_SHEET]!.rows) {
-      if (flag) {
-        flag = false;
-      } else {
+    var count = 0;
+    for (var row in excel.tables['Sheet1']!.rows) {
+      count++;
+      if (count >= 290 && count < 825) {
         var list = row.map((e) => e?.value).toList();
-        final docRef = _firestore.collection(C_RESTAURANTS).doc();
+        if (list[0].toString().trim().isEmpty) continue;
+        final docRef = _firestore
+            .collection(C_RESTAURANTS)
+            .doc(list[0].toString().trim())
+            .collection(C_C_MENU)
+            .doc();
         await docRef.set({
-          RESTAURANT_ID: docRef.id,
-          RESTAURANT_ADDRESS: list[3].toString(),
-          RESTAURANT_BUSINESSNAME: list[2].toString(),
-          RESTAURANT_CITY: list[4].toString(),
-          RESTAURANT_EMAIL: list[16].toString(),
-          RESTAURANT_PHONE: list[7].toString(),
-          RESTAURANT_STATE: list[5].toString(),
-          RESTAURANT_URL: list[8].toString(),
-          RESTAURANT_ZIP: list[6].toString()
+          MENU_ID: docRef.id,
+          MENU_NAME: list[6].toString(),
+          MENU_DESCRIPTION: list[7].toString(),
+          MENU_PRICE: list[8].toString()
         });
       }
     }
