@@ -15,15 +15,19 @@ class AmenityEdit extends StatefulWidget {
 
 class _AmenityEditState extends State<AmenityEdit> {
   final _nameController = TextEditingController();
+  final _logoController = TextEditingController();
 
   late String name = '';
+  late String logo = '';
 
   void _getAmenity() {
     AppModel().getAmenity(
       id: widget.id,
       onSuccess: (param) {
         name = param![AMENITY_NAME];
+        logo = param[AMENITY_LOGO] ?? '';
         _nameController.text = name;
+        _logoController.text = logo;
         setState(() {});
       },
       onEmpty: () {},
@@ -71,14 +75,39 @@ class _AmenityEditState extends State<AmenityEdit> {
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 2,
           child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: _logoController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  hintText: "Enter amenity logo id.",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  prefixIcon: const Icon(Icons.image_search),
+                ),
+                validator: (logo) {
+                  if (logo?.isEmpty ?? true) {
+                    return "Please enter an amenity logo id.";
+                  }
+                  return null;
+                },
+              ))),
+    ));
+    editView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Padding(
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
               child: const Text("Save", style: TextStyle(fontSize: 18)),
               onPressed: () {
                 if (_nameController.text.trim() == '') return;
+                if (_logoController.text.trim() == '') return;
                 AppModel().setAmenity(
                     id: widget.id,
                     name: _nameController.text.trim(),
+                    logo: _logoController.text.trim(),
                     onSuccess: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Success!')),

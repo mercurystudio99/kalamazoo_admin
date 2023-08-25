@@ -15,6 +15,7 @@ class _AmenitiesState extends State<Amenities> {
   static List<Map<String, dynamic>> amenities = [];
 
   final _nameController = TextEditingController();
+  final _logoController = TextEditingController();
 
   void _getAmenities() {
     AppModel().getAmenities(
@@ -69,16 +70,42 @@ class _AmenitiesState extends State<Amenities> {
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 2,
           child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: _logoController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  hintText: "Enter amenity logo id.",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  prefixIcon: const Icon(Icons.image_search),
+                ),
+                validator: (logo) {
+                  if (logo?.isEmpty ?? true) {
+                    return "Please enter an amenity logo id.";
+                  }
+                  return null;
+                },
+              ))),
+    ));
+    editView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Padding(
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
               child:
                   const Text("Add an Amenity", style: TextStyle(fontSize: 18)),
               onPressed: () {
                 if (_nameController.text.trim() == '') return;
+                if (_logoController.text.trim() == '') return;
                 AppModel().setAmenities(
                     name: _nameController.text.trim(),
+                    logo: _logoController.text.trim(),
                     onSuccess: () {
                       _nameController.text = '';
+                      _logoController.text = '';
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Success!')),
                       );

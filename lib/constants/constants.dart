@@ -103,3 +103,4 @@ const String CATEGORY_NAME = "name";
 
 const String AMENITY_ID = "id";
 const String AMENITY_NAME = "name";
+const String AMENITY_LOGO = "logo";
