@@ -35,6 +35,7 @@ const String ADMIN_PASSWORD = "admin_password";
 const String C_APP_INFO = "AppInfo";
 const String C_USERS = "Users";
 const String C_CATEGORIES = "Categories";
+const String C_AMENITIES = "Amenities";
 const String C_RESTAURANTS = "Restaurants";
 const String C_FLAGGED_USERS = "FlaggedUsers";
 const String C_C_MENU = "Menu";
@@ -99,3 +100,6 @@ const String MENU_PHOTO_LINK = "photoLink";
 
 const String CATEGORY_ID = "id";
 const String CATEGORY_NAME = "name";
+
+const String AMENITY_ID = "id";
+const String AMENITY_NAME = "name";

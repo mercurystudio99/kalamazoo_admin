@@ -262,6 +262,63 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void getAmenities({
+    required Function(List<Map<String, dynamic>>) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    final snapshots = await _firestore
+        .collection(C_AMENITIES)
+        .orderBy(AMENITY_NAME, descending: false)
+        .get();
+    if (snapshots.docs.isEmpty) {
+      onEmpty();
+    } else {
+      List<Map<String, dynamic>> list = [];
+      for (var element in snapshots.docs) {
+        list.add(element.data());
+      }
+      onSuccess(list);
+    }
+  }
+
+  void getAmenity({
+    required String id,
+    required Function(Map<String, dynamic>?) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    if (id.isNotEmpty) {
+      final snapshots = await _firestore.collection(C_AMENITIES).doc(id).get();
+      if (snapshots.data()!.isEmpty) {
+        onEmpty();
+      } else {
+        onSuccess(snapshots.data());
+      }
+    } else {
+      onEmpty();
+    }
+  }
+
+  void setAmenities(
+      {required String name, required VoidCallback onSuccess}) async {
+    final docRef = _firestore.collection(C_AMENITIES).doc();
+    await docRef.set({
+      AMENITY_ID: docRef.id,
+      AMENITY_NAME: name,
+    });
+    onSuccess();
+  }
+
+  void setAmenity(
+      {required String id,
+      required String name,
+      required VoidCallback onSuccess}) async {
+    final docRef = _firestore.collection(C_AMENITIES).doc(id);
+    await docRef.update({
+      AMENITY_NAME: name,
+    });
+    onSuccess();
+  }
+
   // Update variables used on table
   void updateOnSort(int columnIndex, bool sortAsc) {
     sortColumnIndex = columnIndex;

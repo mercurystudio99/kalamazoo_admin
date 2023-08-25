@@ -3,6 +3,7 @@ import 'package:kalamazoo_app_dashboard/screens/admin_profile.dart';
 import 'package:kalamazoo_app_dashboard/screens/dashboard.dart';
 import 'package:kalamazoo_app_dashboard/screens/category.dart';
 import 'package:kalamazoo_app_dashboard/screens/food_category.dart';
+import 'package:kalamazoo_app_dashboard/screens/amenities.dart';
 import 'package:kalamazoo_app_dashboard/screens/push_notifications.dart';
 import 'package:kalamazoo_app_dashboard/screens/sign_in_screen.dart';
 import 'package:kalamazoo_app_dashboard/screens/users_screen.dart';
@@ -50,7 +51,6 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
             leading: const Icon(Icons.category),
             title: Text("Categories", style: _menuTextStyle),
             onTap: () {
-              // Go to categories screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const Category()));
             },
@@ -60,7 +60,6 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
             leading: const Icon(Icons.people_outline),
             title: Text("Users", style: _menuTextStyle),
             onTap: () {
-              // Go to users screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UsersScreen()));
             },
@@ -70,9 +69,17 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
             leading: const Icon(Icons.dining_sharp),
             title: Text("Food Category", style: _menuTextStyle),
             onTap: () {
-              // Go to users screen
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const FoodCategory()));
+            },
+          ),
+          const Divider(height: 0),
+          ListTile(
+            leading: const Icon(Icons.cases),
+            title: Text("Amenities", style: _menuTextStyle),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Amenities()));
             },
           ),
           // const Divider(height: 0),
