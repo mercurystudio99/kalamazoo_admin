@@ -318,6 +318,14 @@ class ProfileScreen extends StatelessWidget {
               )),
           const Divider(thickness: 1),
 
+          // User Role
+          ListTile(
+              leading: Icon(Icons.supervised_user_circle,
+                  color: Theme.of(context).primaryColor),
+              title: const Text('Role'),
+              trailing: Text(user.userRole)),
+          const Divider(thickness: 1),
+
           // User Status
           // ListTile(
           //     leading: Icon(Icons.info_outline,

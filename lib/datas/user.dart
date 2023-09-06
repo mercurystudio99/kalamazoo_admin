@@ -19,7 +19,7 @@ class User {
   // final GeoPoint userGeoPoint;
   final String userStatus;
   final bool userIsVerified;
-  // final String userLevel;
+  final String userRole;
   // final DateTime userRegDate;
   // final DateTime userLastLogin;
   // final String userDeviceToken;
@@ -50,7 +50,7 @@ class User {
     // required this.userSettings,
     required this.userStatus,
     required this.userIsVerified,
-    // required this.userLevel,
+    required this.userRole,
     // required this.userRegDate,
     // required this.userLastLogin,
     // required this.userDeviceToken,
@@ -81,7 +81,7 @@ class User {
       // userSettings: doc[USER_SETTINGS],
       userStatus: doc[USER_STATUS] ?? '',
       userIsVerified: doc[USER_IS_VERIFIED] ?? false,
-      // userLevel: doc[USER_LEVEL],
+      userRole: doc[USER_ROLE] ?? '',
       // userRegDate: doc[USER_REG_DATE].toDate(), // Firestore Timestamp
       // userLastLogin: doc[USER_LAST_LOGIN].toDate(), // Firestore Timestamp
       // userDeviceToken: doc[USER_DEVICE_TOKEN] ?? '',

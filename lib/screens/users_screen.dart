@@ -62,12 +62,12 @@ class _UsersScreenState extends State<UsersScreen> {
                     _dataSource.sort(USER_GENDER, columnIndex, sortAsc);
                   }),
               const DataColumn(label: Text("User ID")),
-              // DataColumn(
-              //     label: const Text("Status"),
-              //     onSort: (int columnIndex, bool sortAsc) {
-              //       // Sort by user status
-              //       _dataSource.sort(USER_STATUS, columnIndex, sortAsc);
-              //     }),
+              DataColumn(
+                  label: const Text("Role"),
+                  onSort: (int columnIndex, bool sortAsc) {
+                    // Sort by user status
+                    _dataSource.sort(USER_ROLE, columnIndex, sortAsc);
+                  }),
               const DataColumn(label: Text("View")),
             ],
             source: _dataSource,
@@ -170,8 +170,10 @@ class UserDataTableSource extends DataTableSource {
       DataCell(Text(user.userFullname)),
       // User Gender
       DataCell(Text(user.userGender)),
-      // User User ID
+      // User ID
       DataCell(Text(_cutUserID(user.userId))),
+      // User Role
+      DataCell(Text(user.userRole)),
       // User Status
       // DataCell(UserStatus(status: user.userStatus)),
       // Button actions
