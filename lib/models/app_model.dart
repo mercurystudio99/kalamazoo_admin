@@ -129,7 +129,11 @@ class AppModel extends Model {
   void getRestaurantByID({
     required Function(Map<String, dynamic>?) onSuccess,
   }) {
-    _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID).get().then(
+    _firestore
+        .collection(globals.restaurantType)
+        .doc(globals.restaurantID)
+        .get()
+        .then(
       (docSnapshot) {
         Map<String, dynamic>? data = docSnapshot.data();
         onSuccess(data);
@@ -149,7 +153,7 @@ class AppModel extends Model {
       required String url,
       required String zip,
       required VoidCallback onSuccess}) async {
-    final docRef = _firestore.collection(C_RESTAURANTS).doc(id);
+    final docRef = _firestore.collection(globals.restaurantType).doc(id);
     await docRef.update({
       RESTAURANT_BUSINESSNAME: name,
       RESTAURANT_ADDRESS: address,
@@ -166,7 +170,7 @@ class AppModel extends Model {
   /// Get Restaurants from database => stream
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     return _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .orderBy(RESTAURANT_BUSINESSNAME)
         .snapshots();
   }
@@ -477,7 +481,7 @@ class AppModel extends Model {
   //     var list = row.map((e) => e?.value).toList();
   //     if (list[0].toString().trim().isEmpty) continue;
   //     final docRef = _firestore
-  //         .collection(C_RESTAURANTS)
+  //         .collection(globals.restaurantType)
   //         .doc(list[0].toString().trim())
   //         .collection(C_C_MENU)
   //         .doc();
@@ -497,7 +501,7 @@ class AppModel extends Model {
     required VoidCallback onSuccess,
     required VoidCallback onError,
   }) async {
-    final snapshots = await _firestore.collection(C_RESTAURANTS).get();
+    final snapshots = await _firestore.collection(globals.restaurantType).get();
 
     ByteData data = await rootBundle.load(filepath);
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
@@ -524,7 +528,7 @@ class AppModel extends Model {
     required VoidCallback onEmpty,
   }) {
     _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .get()
@@ -548,7 +552,7 @@ class AppModel extends Model {
     required VoidCallback onError,
   }) async {
     final docRef = _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .doc();
@@ -578,7 +582,7 @@ class AppModel extends Model {
     required Function(Map<String, dynamic>?) onSuccess,
   }) {
     _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .doc(id)
@@ -600,7 +604,7 @@ class AppModel extends Model {
       required String category,
       required VoidCallback onSuccess}) async {
     final docRef = _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .doc(id);
@@ -620,7 +624,7 @@ class AppModel extends Model {
     required VoidCallback onError,
   }) async {
     final docRef =
-        _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID);
+        _firestore.collection(globals.restaurantType).doc(globals.restaurantID);
     await docRef.update({
       RESTAURANT_IMAGE: imageUrl,
     });
@@ -633,7 +637,7 @@ class AppModel extends Model {
     required VoidCallback onSuccess,
   }) async {
     final docRef =
-        _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID);
+        _firestore.collection(globals.restaurantType).doc(globals.restaurantID);
     await docRef.update({
       RESTAURANT_AMENITIES: list,
     });
@@ -648,7 +652,7 @@ class AppModel extends Model {
     required VoidCallback onError,
   }) async {
     final docRef = _firestore
-        .collection(C_RESTAURANTS)
+        .collection(globals.restaurantType)
         .doc(globals.restaurantID)
         .collection(C_C_MENU)
         .doc(id);

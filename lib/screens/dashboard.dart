@@ -46,13 +46,15 @@ class _DashboardState extends State<Dashboard> {
   }
 
   /// Get Restaurants Stream to listen updates
-  void _getRestaurantsUpdates() {
+  void _getRestaurantsUpdates(String type) {
+    globals.restaurantType = type;
     _restaurants = AppModel().getRestaurants();
     // Listen updates
     _restaurants!.listen((event) {
       // Update restaurants
       AppModel().updateRestaurants(event.docs);
     });
+    setState(() {});
   }
 
   // /// Count User Statistics
@@ -78,7 +80,7 @@ class _DashboardState extends State<Dashboard> {
     // Get updates
     _getUsersUpdates();
     _getAppInfoUpdates();
-    _getRestaurantsUpdates();
+    _getRestaurantsUpdates(globals.restaurantType);
   }
 
   @override
@@ -245,6 +247,60 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                   ),
+                  Center(
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DefaultButton(
+                                    child: Text(C_RESTAURANTS,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: globals.restaurantType ==
+                                                    C_RESTAURANTS
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.white)),
+                                    level: 1,
+                                    type: C_RESTAURANTS,
+                                    onPressed: () {
+                                      _getRestaurantsUpdates(C_RESTAURANTS);
+                                    },
+                                  ),
+                                  DefaultButton(
+                                    child: Text(C_WINERIES,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: globals.restaurantType ==
+                                                    C_WINERIES
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.white)),
+                                    level: 1,
+                                    type: C_WINERIES,
+                                    onPressed: () {
+                                      _getRestaurantsUpdates(C_WINERIES);
+                                    },
+                                  ),
+                                  DefaultButton(
+                                    child: Text(C_BREWERIES,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: globals.restaurantType ==
+                                                    C_BREWERIES
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.white)),
+                                    level: 1,
+                                    type: C_BREWERIES,
+                                    onPressed: () {
+                                      _getRestaurantsUpdates(C_BREWERIES);
+                                    },
+                                  ),
+                                ]))),
+                  ),
+
                   // Center(
                   //   child: SizedBox(
                   //     width: 300,

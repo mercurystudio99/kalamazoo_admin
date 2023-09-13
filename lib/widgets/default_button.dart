@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
 
 class DefaultButton extends StatelessWidget {
   // Variables
@@ -7,13 +8,19 @@ class DefaultButton extends StatelessWidget {
   final double? width;
   final double? height;
   final double? borderRadius;
+  final int? level;
+  final String? type;
 
   const DefaultButton(
-      {Key? key, required this.child,
+      {Key? key,
+      required this.child,
       required this.onPressed,
       this.width,
       this.height,
-      this.borderRadius}) : super(key: key);
+      this.borderRadius,
+      this.level,
+      this.type})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +30,9 @@ class DefaultButton extends StatelessWidget {
       child: ElevatedButton(
         child: child,
         style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            textStyle: const TextStyle(color: Colors.white),
+            backgroundColor: (globals.restaurantType == type && level == 1)
+                ? Colors.white
+                : Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 28.0))),
         onPressed: onPressed,
