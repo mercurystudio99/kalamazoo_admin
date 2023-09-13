@@ -3,6 +3,7 @@ import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 class Restaurant {
   final String id;
   final String address;
+  final List<dynamic> amenities;
   final String businessName;
   final String city;
   final String email;
@@ -15,6 +16,7 @@ class Restaurant {
   Restaurant({
     required this.id,
     required this.address,
+    required this.amenities,
     required this.businessName,
     required this.city,
     required this.email,
@@ -29,6 +31,7 @@ class Restaurant {
     return Restaurant(
         id: doc[RESTAURANT_ID],
         address: doc[RESTAURANT_ADDRESS],
+        amenities: doc[RESTAURANT_AMENITIES] ?? [],
         businessName: doc[RESTAURANT_BUSINESSNAME],
         city: doc[RESTAURANT_CITY] ?? '',
         email: doc[RESTAURANT_EMAIL],

@@ -30,6 +30,8 @@ class _RestaurantEditState extends State<RestaurantEdit> {
   final _zipController = TextEditingController();
 
   Map<String, dynamic> info = {};
+  late List<Map<String, dynamic>> amenities = [];
+  late final Map<String, dynamic> _isCheckedAmenities = {};
   List<QueryDocumentSnapshot<Map<String, dynamic>>> foodInfo = [];
 
   final _storage = FirebaseStorage.instance;
@@ -70,6 +72,22 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     }
   }
 
+  void _saveAmenities(
+      {required VoidCallback onCallback, required Function(String) onError}) {
+    List<dynamic> checkedAmenities = [];
+    for (var element in amenities) {
+      if (_isCheckedAmenities[element[AMENITY_ID]] == true) {
+        checkedAmenities.add(element[AMENITY_ID]);
+      }
+    }
+
+    AppModel().updateRestaurantAmenities(
+        list: checkedAmenities,
+        onSuccess: () {
+          onCallback();
+        });
+  }
+
   void _getRestaurantByID() {
     AppModel().getRestaurantByID(onSuccess: (param) {
       info = param!;
@@ -97,11 +115,30 @@ class _RestaurantEditState extends State<RestaurantEdit> {
         onEmpty: () {});
   }
 
+  void _getAmenities() {
+    AppModel().getAmenities(
+      onSuccess: (List<Map<String, dynamic>> param) {
+        amenities = param;
+        for (var element in amenities) {
+          _isCheckedAmenities[element[AMENITY_ID]] = false;
+        }
+        if (info[RESTAURANT_AMENITIES] != null) {
+          for (var id in info[RESTAURANT_AMENITIES]) {
+            _isCheckedAmenities[id] = true;
+          }
+        }
+        setState(() {});
+      },
+      onEmpty: () {},
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getRestaurantByID();
     _getFoods();
+    _getAmenities();
   }
 
   @override
@@ -486,7 +523,36 @@ class _RestaurantEditState extends State<RestaurantEdit> {
           SizedBox(width: MediaQuery.of(context).size.width / 2, height: 100),
     ));
 
-    List<Widget> listView = [...editView, ...menuView];
+    List<Widget> amenitiesView = [];
+    amenitiesView.add(_listing());
+    amenitiesView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 3,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: DefaultButton(
+              child:
+                  const Text("Save Amenities", style: TextStyle(fontSize: 18)),
+              onPressed: () {
+                _saveAmenities(onCallback: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Success.')),
+                  );
+                }, onError: (String text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(text)),
+                  );
+                });
+              },
+            ),
+          )),
+    ));
+    amenitiesView.add(Center(
+      child:
+          SizedBox(width: MediaQuery.of(context).size.width / 2, height: 100),
+    ));
+
+    List<Widget> listView = [...editView, ...menuView, ...amenitiesView];
     return Scaffold(
       appBar: AppBar(
         title: const Text("Restaurant Edit"),
@@ -499,5 +565,95 @@ class _RestaurantEditState extends State<RestaurantEdit> {
         ),
       ),
     );
+  }
+
+  Widget _listing() {
+    Size size = MediaQuery.of(context).size;
+    int length = 30;
+    double itemWidth = 300;
+    if (size.width < 1400) {
+      length = 30;
+    }
+    if (size.width < 1200) {
+      length = 20;
+    }
+    if (size.width < 600) {
+      length = 12;
+    }
+
+    List<Widget> lists = amenities.map((item) {
+      return SizedBox(
+          width: itemWidth,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.shade400,
+                        blurRadius: 5,
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: ColoredBox(
+                    color: Colors.white,
+                    child: Transform.scale(
+                      scale: 1.3,
+                      child: Checkbox(
+                        side: const BorderSide(color: Colors.white),
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Colors.blueAccent;
+                          }
+                          return Colors.blueAccent;
+                        }),
+                        value: _isCheckedAmenities[item[AMENITY_ID]],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isCheckedAmenities[item[AMENITY_ID]] = value!;
+                          });
+                        },
+                      ),
+                    )),
+              ),
+              const SizedBox(width: 5),
+              Image.asset(
+                'assets/images/amenities/icon (${item[AMENITY_LOGO]}).png',
+              ),
+              const SizedBox(width: 5),
+              Text(item[AMENITY_NAME].toString().length < length
+                  ? item[AMENITY_NAME]
+                  : '${item[AMENITY_NAME].toString().substring(0, length - 2)}..')
+            ]),
+          ));
+    }).toList();
+    int rowCount = lists.length ~/ 2;
+    List<Widget> rowList = [];
+    for (int i = 0; i < rowCount + 1; i++) {
+      if (lists.length > 2 * (i + 1)) {
+        rowList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: lists.sublist(2 * i, 2 * (i + 1))));
+      } else {
+        rowList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: lists.sublist(2 * i, lists.length)));
+      }
+    }
+
+    return Center(
+        child: SizedBox(
+      width: itemWidth * 2 + 10,
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: rowList),
+    ));
   }
 }

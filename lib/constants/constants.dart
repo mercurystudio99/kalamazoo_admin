@@ -84,6 +84,7 @@ const String TIMESTAMP = "timestamp";
 
 const String RESTAURANT_ID = "id";
 const String RESTAURANT_ADDRESS = "address";
+const String RESTAURANT_AMENITIES = "amenities";
 const String RESTAURANT_BUSINESSNAME = "businessName";
 const String RESTAURANT_CITY = "city";
 const String RESTAURANT_EMAIL = "email";

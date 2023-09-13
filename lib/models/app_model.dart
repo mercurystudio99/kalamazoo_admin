@@ -627,6 +627,19 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void updateRestaurantAmenities({
+    required List<dynamic> list,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+  }) async {
+    final docRef =
+        _firestore.collection(C_RESTAURANTS).doc(globals.restaurantID);
+    await docRef.update({
+      RESTAURANT_AMENITIES: list,
+    });
+    onSuccess();
+  }
+
   void updateFoodImage({
     required String id,
     required String imageUrl,
