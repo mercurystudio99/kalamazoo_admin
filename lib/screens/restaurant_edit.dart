@@ -31,12 +31,14 @@ class _RestaurantEditState extends State<RestaurantEdit> {
 
   Map<String, dynamic> info = {};
   late List<Map<String, dynamic>> amenities = [];
+  late List<Map<String, dynamic>> topMenuList = [];
   late final Map<String, dynamic> _isCheckedAmenities = {};
   List<QueryDocumentSnapshot<Map<String, dynamic>>> foodInfo = [];
 
   final _storage = FirebaseStorage.instance;
   PlatformFile? _imageFile;
   String _imageLink = '';
+  String _selectedTopMenu = '';
 
   Future getImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -102,6 +104,9 @@ class _RestaurantEditState extends State<RestaurantEdit> {
       _stateController.text = info[RESTAURANT_STATE];
       _urlController.text = info[RESTAURANT_URL];
       _zipController.text = info[RESTAURANT_ZIP];
+      if (info[RESTAURANT_CATEGORY] != null) {
+        _selectedTopMenu = info[RESTAURANT_CATEGORY];
+      }
       setState(() {});
     });
   }
@@ -133,12 +138,23 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     );
   }
 
+  void _getTopMenu() {
+    AppModel().getTopMenu(
+      onSuccess: (List<Map<String, dynamic>> param) {
+        topMenuList = param;
+        setState(() {});
+      },
+      onEmpty: () {},
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getRestaurantByID();
     _getFoods();
     _getAmenities();
+    _getTopMenu();
   }
 
   @override
@@ -439,6 +455,18 @@ class _RestaurantEditState extends State<RestaurantEdit> {
                 },
               ))),
     ));
+    editView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          height: 70,
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: topMenuList.map((topmenu) {
+                  return categoryBox(topmenu, Theme.of(context).primaryColor);
+                }).toList(),
+              ))),
+    ));
 
     editView.add(Center(
       child: SizedBox(
@@ -456,6 +484,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
                 if (_stateController.text.trim() == '') return;
                 if (_urlController.text.trim() == '') return;
                 if (_zipController.text.trim() == '') return;
+                if (_selectedTopMenu.isEmpty) return;
                 AppModel().setRestaurantByID(
                     id: widget.id,
                     name: _nameController.text.trim(),
@@ -466,6 +495,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
                     state: _stateController.text.trim(),
                     url: _urlController.text.trim(),
                     zip: _zipController.text.trim(),
+                    topmenu: _selectedTopMenu,
                     onSuccess: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Success!')),
@@ -655,5 +685,41 @@ class _RestaurantEditState extends State<RestaurantEdit> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: rowList),
     ));
+  }
+
+  Widget categoryBox(Map<String, dynamic> item, Color backgroundcolor) {
+    return InkWell(
+        onTap: () {
+          setState(() {
+            _selectedTopMenu = item[TOPMENU_ID];
+          });
+        },
+        child: Container(
+            margin:
+                const EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 12),
+            width: 65,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(10),
+              color: _selectedTopMenu == item[TOPMENU_ID]
+                  ? Colors.redAccent
+                  : backgroundcolor,
+            ),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/images/topmenu/${item[TOPMENU_IMAGE]}.png",
+                    width: 25, height: 25),
+                Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                        item[TOPMENU_NAME].toString().length <= 10
+                            ? item[TOPMENU_NAME].toString()
+                            : '${item[TOPMENU_NAME].toString().substring(0, 8)}..',
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 10))),
+              ],
+            )));
   }
 }

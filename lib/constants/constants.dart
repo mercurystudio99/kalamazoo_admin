@@ -39,6 +39,7 @@ const String C_AMENITIES = "Amenities";
 const String C_RESTAURANTS = "Restaurants";
 const String C_WINERIES = "Wineries";
 const String C_BREWERIES = "Breweries";
+const String C_TOPMENU = "TopMenus";
 const String C_FLAGGED_USERS = "FlaggedUsers";
 const String C_C_MENU = "Menu";
 
@@ -93,6 +94,7 @@ const String RESTAURANT_PHONE = "phone";
 const String RESTAURANT_STATE = "state";
 const String RESTAURANT_URL = "url";
 const String RESTAURANT_ZIP = "zip";
+const String RESTAURANT_CATEGORY = "category";
 
 const String MENU_ID = "id";
 const String MENU_NAME = "name";
@@ -107,3 +109,7 @@ const String CATEGORY_NAME = "name";
 const String AMENITY_ID = "id";
 const String AMENITY_NAME = "name";
 const String AMENITY_LOGO = "logo";
+
+const String TOPMENU_ID = "id";
+const String TOPMENU_NAME = "name";
+const String TOPMENU_IMAGE = "imgName";

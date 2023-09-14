@@ -152,6 +152,7 @@ class AppModel extends Model {
       required String state,
       required String url,
       required String zip,
+      required String topmenu,
       required VoidCallback onSuccess}) async {
     final docRef = _firestore.collection(globals.restaurantType).doc(id);
     await docRef.update({
@@ -163,6 +164,7 @@ class AppModel extends Model {
       RESTAURANT_STATE: state,
       RESTAURANT_URL: url,
       RESTAURANT_ZIP: zip,
+      RESTAURANT_CATEGORY: topmenu
     });
     onSuccess();
   }
@@ -433,6 +435,22 @@ class AppModel extends Model {
       onError();
       debugPrint('sendPushNotification() -> error: $error');
     });
+  }
+
+  void getTopMenu({
+    required Function(List<Map<String, dynamic>>) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    final snapshots = await _firestore.collection(C_TOPMENU).get();
+    if (snapshots.docs.isEmpty) {
+      onEmpty();
+    } else {
+      List<Map<String, dynamic>> list = [];
+      for (var element in snapshots.docs) {
+        list.add(element.data());
+      }
+      onSuccess(list);
+    }
   }
 
   void importExcel({

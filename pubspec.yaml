@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/amenities/
+    - assets/images/topmenu/
     - assets/resources/
 
   # An image asset can refer to one or more resolution-specific "variants", see
