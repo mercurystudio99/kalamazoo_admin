@@ -453,6 +453,23 @@ class AppModel extends Model {
     }
   }
 
+  // void getTemp({
+  //   required VoidCallback onSuccess,
+  //   required VoidCallback onEmpty,
+  // }) async {
+  //   final snapshots = await _firestore.collection(C_RESTAURANTS).get();
+  //   if (snapshots.docs.isEmpty) {
+  //     onEmpty();
+  //   } else {
+  //     for (var element in snapshots.docs) {
+  //       final docRef = _firestore
+  //           .collection(C_RESTAURANTS)
+  //           .doc(element.data()[RESTAURANT_ID]);
+  //       await docRef.update({RESTAURANT_CATEGORY: 'b5YBzf9airR6YZnmXWAC'});
+  //     }
+  //   }
+  // }
+
   void importExcel({
     required String filepath,
     // VoidCallback functions

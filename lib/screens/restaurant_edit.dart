@@ -148,6 +148,13 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     );
   }
 
+  // void _getTemp() {
+  //   AppModel().getTemp(
+  //     onSuccess: () {},
+  //     onEmpty: () {},
+  //   );
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -155,6 +162,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     _getFoods();
     _getAmenities();
     _getTopMenu();
+    // _getTemp();
   }
 
   @override
