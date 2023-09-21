@@ -24,6 +24,7 @@ class _DashboardState extends State<Dashboard> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? _restaurants;
 
   bool isDisabled = false;
+  String searchKeyword = '';
 
   /// Get AppInfo Stream to update UI after changes
   void _getAppInfoUpdates() {
@@ -113,12 +114,31 @@ class _DashboardState extends State<Dashboard> {
                 // Variables
                 final List<DocumentSnapshot<Map<String, dynamic>>> restaurants =
                     snapshot.data!.docs;
-                final List<Widget> restaurantViews = restaurants
+                List<DocumentSnapshot<Map<String, dynamic>>> filters = [];
+                if (searchKeyword.isEmpty) {
+                  filters = restaurants;
+                } else {
+                  for (var restaurant in restaurants) {
+                    if (restaurant
+                            .data()![RESTAURANT_BUSINESSNAME]
+                            .toString()
+                            .toLowerCase()
+                            .contains(searchKeyword) ||
+                        restaurant
+                            .data()![RESTAURANT_ZIP]
+                            .toString()
+                            .contains(searchKeyword)) {
+                      filters.add(restaurant);
+                    }
+                  }
+                }
+                final List<Widget> restaurantViews = filters
                     .map((restaurant) => Center(
                           child: Container(
                               width: double.maxFinite,
                               color: Colors.white,
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 30),
                               child: ListTile(
                                 leading: const Icon(Icons.business),
                                 title: Text(
@@ -301,6 +321,30 @@ class _DashboardState extends State<Dashboard> {
                                 ]))),
                   ),
 
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(50))),
+                              hintText: 'Search for the restaurants',
+                              prefixIcon: Icon(Icons.search, size: 24)),
+                          onFieldSubmitted: (value) {
+                            setState(() {
+                              searchKeyword = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  )
                   // Center(
                   //   child: SizedBox(
                   //     width: 300,
