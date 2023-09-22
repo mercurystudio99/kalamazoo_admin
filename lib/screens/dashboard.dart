@@ -320,13 +320,11 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ]))),
                   ),
-
                   Center(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width / 2,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: TextFormField(
                           decoration: const InputDecoration(
                               filled: true,
@@ -344,32 +342,89 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
-                  )
-                  // Center(
-                  //   child: SizedBox(
-                  //     width: 300,
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.all(10),
-                  //       child: DefaultButton(
-                  //         child: const Text("Import from Excel",
-                  //             style: TextStyle(fontSize: 18)),
-                  //         onPressed: () {
-                  //           if (!isDisabled) {
-                  //             _onPressed();
-                  //             AppModel().importExcel(
-                  //                 filepath: 'assets/resources/data.xlsx',
-                  //                 onSuccess: () {
-                  //                   _onPressed();
-                  //                 },
-                  //                 onError: () {
-                  //                   _onPressed();
-                  //                 });
-                  //           }
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  ),
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              DefaultButton(
+                                child: Text(
+                                    isDisabled
+                                        ? "Hold on..."
+                                        : "Create a Template",
+                                    style: const TextStyle(
+                                        fontSize: 18, color: Colors.white)),
+                                onPressed: () {
+                                  if (isDisabled) return;
+                                  _onPressed();
+                                  AppModel().createTemplateForRestaurant(
+                                      filepath:
+                                          'assets/resources/template_restaurant.xlsx',
+                                      onSuccess: () {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Success.')),
+                                        );
+                                        _onPressed();
+                                      },
+                                      onError: () {});
+                                },
+                              ),
+                              const SizedBox(width: 5),
+                              DefaultButton(
+                                child: Text(
+                                    isDisabled ? "Hold on..." : "Export",
+                                    style: const TextStyle(
+                                        fontSize: 18, color: Colors.white)),
+                                onPressed: () {
+                                  if (isDisabled) return;
+                                  _onPressed();
+                                  AppModel().exportExcelForRestaurant(
+                                      filepath:
+                                          'assets/resources/template_restaurant.xlsx',
+                                      onSuccess: () {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Success.')),
+                                        );
+                                        _onPressed();
+                                      },
+                                      onError: () {});
+                                },
+                              ),
+                              const SizedBox(width: 5),
+                              DefaultButton(
+                                child: Text(
+                                    isDisabled ? "Hold on..." : "Import",
+                                    style: const TextStyle(fontSize: 18)),
+                                onPressed: () {
+                                  if (isDisabled) return;
+                                  _onPressed();
+                                  AppModel().importExcelForRestaurant(
+                                      onSuccess: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Success.')),
+                                    );
+                                    _onPressed();
+                                  }, onError: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Failed.')),
+                                    );
+                                    _onPressed();
+                                  });
+                                },
+                              ),
+                            ],
+                          )),
+                    ),
+                  ),
                 ];
                 final List<Widget> mainView = [...topView, ...restaurantViews];
 

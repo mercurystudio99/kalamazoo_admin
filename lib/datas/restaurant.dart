@@ -7,6 +7,7 @@ class Restaurant {
   final String businessName;
   final String city;
   final String email;
+  final List<double> geolocation;
   final String phone;
   final String state;
   final String url;
@@ -20,6 +21,7 @@ class Restaurant {
     required this.businessName,
     required this.city,
     required this.email,
+    required this.geolocation,
     required this.phone,
     required this.state,
     required this.url,
@@ -35,6 +37,7 @@ class Restaurant {
         businessName: doc[RESTAURANT_BUSINESSNAME],
         city: doc[RESTAURANT_CITY] ?? '',
         email: doc[RESTAURANT_EMAIL],
+        geolocation: doc[RESTAURANT_GEOLOCATION] ?? [],
         phone: doc[RESTAURANT_PHONE],
         state: doc[RESTAURANT_STATE],
         url: doc[RESTAURANT_URL],

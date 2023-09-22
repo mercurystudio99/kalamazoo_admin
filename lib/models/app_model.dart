@@ -10,6 +10,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AppModel extends Model {
   // Variables
@@ -470,37 +471,53 @@ class AppModel extends Model {
   //   }
   // }
 
-  void importExcel({
-    required String filepath,
+  void importExcelForRestaurant({
     // VoidCallback functions
     required VoidCallback onSuccess,
     required VoidCallback onError,
   }) async {
-    ByteData data = await rootBundle.load(filepath);
-    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    var excel = Excel.decodeBytes(bytes);
+    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+      allowMultiple: false,
+    );
 
-    bool flag = true;
-    for (var row in excel.tables['Sheet1']!.rows) {
-      if (flag) {
-        flag = false;
-      } else {
-        var list = row.map((e) => e?.value).toList();
-        final docRef = _firestore.collection(C_WINERIES).doc();
-        await docRef.set({
-          RESTAURANT_ID: docRef.id,
-          RESTAURANT_ADDRESS: list[1].toString(),
-          RESTAURANT_BUSINESSNAME: list[0].toString(),
-          RESTAURANT_CITY: list[2].toString(),
-          RESTAURANT_EMAIL: list[6].toString(),
-          RESTAURANT_PHONE: list[5].toString(),
-          RESTAURANT_STATE: list[3].toString(),
-          RESTAURANT_URL: list[8].toString(),
-          RESTAURANT_ZIP: list[4].toString()
-        });
+    if (pickedFile != null) {
+      var bytes = pickedFile.files.single.bytes;
+      var excel = Excel.decodeBytes(bytes!);
+
+      bool flag = true;
+      for (var row in excel.tables[EXCEL_SHEET]!.rows) {
+        if (flag) {
+          flag = false;
+        } else {
+          var list = row.map((e) => e?.value).toList();
+
+          List<double> geolocation = [0, 0];
+          double? lat = double.tryParse(list[9].toString());
+          double? lng = double.tryParse(list[10].toString());
+          if (lat != null) geolocation[0] = lat;
+          if (lng != null) geolocation[1] = lng;
+
+          final docRef = _firestore.collection(globals.restaurantType).doc();
+          await docRef.set({
+            RESTAURANT_ID: docRef.id,
+            RESTAURANT_ADDRESS: list[1].toString(),
+            RESTAURANT_BUSINESSNAME: list[0].toString(),
+            RESTAURANT_CITY: list[2].toString(),
+            RESTAURANT_EMAIL: list[6].toString(),
+            RESTAURANT_GEOLOCATION: geolocation,
+            RESTAURANT_PHONE: list[5].toString(),
+            RESTAURANT_STATE: list[3].toString(),
+            RESTAURANT_URL: list[8].toString(),
+            RESTAURANT_ZIP: list[4].toString()
+          });
+        }
       }
+      onSuccess();
+    } else {
+      onError();
     }
-    onSuccess();
   }
   // void importExcel({
   //   required String filepath,
@@ -530,7 +547,7 @@ class AppModel extends Model {
   //   onSuccess();
   // }
 
-  void exportExcel({
+  void exportExcelForRestaurant({
     required String filepath,
     // VoidCallback functions
     required VoidCallback onSuccess,
@@ -542,18 +559,41 @@ class AppModel extends Model {
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     var excel = Excel.decodeBytes(bytes);
 
-    Sheet sheetObject = excel['Sheet1'];
+    Sheet sheetObject = excel[EXCEL_SHEET];
 
     var count = 0;
     for (var snapshot in snapshots.docs) {
       List<String> dataList = [
-        snapshot.data()[RESTAURANT_ID],
-        snapshot.data()[RESTAURANT_BUSINESSNAME]
+        snapshot.data()[RESTAURANT_BUSINESSNAME],
+        snapshot.data()[RESTAURANT_ADDRESS],
+        snapshot.data()[RESTAURANT_CITY],
+        snapshot.data()[RESTAURANT_STATE],
+        snapshot.data()[RESTAURANT_ZIP],
+        snapshot.data()[RESTAURANT_PHONE],
+        snapshot.data()[RESTAURANT_EMAIL],
+        '',
+        snapshot.data()[RESTAURANT_URL],
+        snapshot.data()[RESTAURANT_GEOLOCATION][0].toString(),
+        snapshot.data()[RESTAURANT_GEOLOCATION][1].toString()
       ];
       sheetObject.insertRowIterables(dataList, ++count);
     }
-    excel.save(fileName: 'result.xlsx');
+    excel.save(fileName: globals.restaurantType + '.xlsx');
 
+    onSuccess();
+  }
+
+  void createTemplateForRestaurant({
+    required String filepath,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    ByteData data = await rootBundle.load(filepath);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+
+    excel.save(fileName: 'template.xlsx');
     onSuccess();
   }
 
