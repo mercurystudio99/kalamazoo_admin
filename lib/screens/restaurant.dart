@@ -18,6 +18,7 @@ class Restaurant extends StatefulWidget {
 class _RestaurantState extends State<Restaurant> {
   late bool _restaurantImageExist = false;
   late int _menuCount = 0;
+  late bool isDisabled = false;
   late Map<String, dynamic> _restaurant = {};
   PlatformFile? _imageFile;
   PlatformFile? _restaurantImage;
@@ -162,6 +163,12 @@ class _RestaurantState extends State<Restaurant> {
     );
   }
 
+  void _onPressed() {
+    setState(() {
+      isDisabled = !isDisabled;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -187,8 +194,78 @@ class _RestaurantState extends State<Restaurant> {
         title: Text(_restaurant[RESTAURANT_BUSINESSNAME] ?? "Restaurant"),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Center(
+          child: Column(children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          margin: const EdgeInsets.only(bottom: 30),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                DefaultButton(
+                  child: Text(isDisabled ? "Hold on..." : "Create a Template",
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  onPressed: () {
+                    if (isDisabled) return;
+                    _onPressed();
+                    AppModel().createTemplateForMenu(
+                        filepath: 'assets/resources/template_menu.xlsx',
+                        onSuccess: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Success.')),
+                          );
+                          _onPressed();
+                        },
+                        onError: () {});
+                  },
+                ),
+                DefaultButton(
+                  child: Text(isDisabled ? "Hold on..." : "Export",
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  onPressed: () {
+                    if (isDisabled) return;
+                    _onPressed();
+                    AppModel().exportExcelForMenu(
+                        filepath: 'assets/resources/template_menu.xlsx',
+                        restaurantName:
+                            _restaurant[RESTAURANT_BUSINESSNAME] ?? '',
+                        onSuccess: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Success.')),
+                          );
+                          _onPressed();
+                        },
+                        onError: () {});
+                  },
+                ),
+                DefaultButton(
+                  child: Text(isDisabled ? "Hold on..." : "Import",
+                      style: const TextStyle(fontSize: 18)),
+                  onPressed: () {
+                    if (isDisabled) return;
+                    _onPressed();
+                    AppModel().importExcelForMenu(onSuccess: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Success.')),
+                      );
+                      _onPressed();
+                    }, onError: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failed.')),
+                      );
+                      _onPressed();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        Center(
           child: SizedBox(
             width: 400,
             child: Card(
@@ -460,8 +537,8 @@ class _RestaurantState extends State<Restaurant> {
               ),
             ),
           ),
-        ),
-      ),
+        )
+      ])),
     );
   }
 }

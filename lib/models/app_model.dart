@@ -519,6 +519,85 @@ class AppModel extends Model {
       onError();
     }
   }
+
+  void importExcelForMenu({
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+      allowMultiple: false,
+    );
+    final snapshotsCategory = await _firestore.collection(C_CATEGORIES).get();
+    Map<String, String> categoryList = {};
+    for (var category in snapshotsCategory.docs) {
+      categoryList[category.data()[CATEGORY_ID]] =
+          category.data()[CATEGORY_NAME];
+    }
+
+    if (pickedFile != null) {
+      var bytes = pickedFile.files.single.bytes;
+      var excel = Excel.decodeBytes(bytes!);
+
+      bool flag = true;
+      for (var row in excel.tables[EXCEL_SHEET]!.rows) {
+        if (flag) {
+          // skip first row at the top in the sheet
+          flag = false;
+        } else {
+          var list = row.map((e) => e?.value).toList();
+
+          String category = '';
+          for (var entry in categoryList.entries) {
+            if (list[1].toString().isNotEmpty &&
+                entry.value == list[1].toString()) {
+              category = entry.key;
+              break;
+            }
+          }
+
+          if (category.isEmpty) {
+            final docCategoryRef = _firestore.collection(C_CATEGORIES).doc();
+            await docCategoryRef.set({
+              CATEGORY_ID: docCategoryRef.id,
+              CATEGORY_NAME: list[1].toString(),
+            });
+            final docRef = _firestore
+                .collection(globals.restaurantType)
+                .doc(globals.restaurantID)
+                .collection(C_C_MENU)
+                .doc();
+            await docRef.set({
+              MENU_ID: docRef.id,
+              MENU_CATEGORY: docCategoryRef.id,
+              MENU_NAME: list[2].toString(),
+              MENU_DESCRIPTION: list[3].toString(),
+              MENU_PRICE: list[4].toString()
+            });
+          } else {
+            final docRef = _firestore
+                .collection(globals.restaurantType)
+                .doc(globals.restaurantID)
+                .collection(C_C_MENU)
+                .doc();
+            await docRef.set({
+              MENU_ID: docRef.id,
+              MENU_CATEGORY: category,
+              MENU_NAME: list[2].toString(),
+              MENU_DESCRIPTION: list[3].toString(),
+              MENU_PRICE: list[4].toString()
+            });
+          }
+        }
+      }
+      onSuccess();
+    } else {
+      onError();
+    }
+  }
+
   // void importExcel({
   //   required String filepath,
   //   // VoidCallback functions
@@ -583,6 +662,53 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void exportExcelForMenu({
+    required String filepath,
+    required String restaurantName,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final snapshotsCategory = await _firestore.collection(C_CATEGORIES).get();
+    Map<String, String> categoryList = {};
+    for (var category in snapshotsCategory.docs) {
+      categoryList[category.data()[CATEGORY_ID]] =
+          category.data()[CATEGORY_NAME];
+    }
+
+    final snapshots = await _firestore
+        .collection(globals.restaurantType)
+        .doc(globals.restaurantID)
+        .collection(C_C_MENU)
+        .get();
+
+    ByteData data = await rootBundle.load(filepath);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+
+    Sheet sheetObject = excel[EXCEL_SHEET];
+
+    var count = 0;
+    for (var snapshot in snapshots.docs) {
+      String category = snapshot.data()[MENU_CATEGORY] == null
+          ? ''
+          : categoryList[snapshot.data()[MENU_CATEGORY]].toString();
+
+      List<String> dataList = [
+        restaurantName,
+        category,
+        snapshot.data()[MENU_NAME],
+        snapshot.data()[MENU_DESCRIPTION] ?? '',
+        snapshot.data()[MENU_PRICE] ?? ''
+      ];
+      sheetObject.insertRowIterables(dataList, ++count);
+    }
+    excel.save(
+        fileName: globals.restaurantType + '_' + restaurantName + '_menu.xlsx');
+
+    onSuccess();
+  }
+
   void createTemplateForRestaurant({
     required String filepath,
     // VoidCallback functions
@@ -594,6 +720,20 @@ class AppModel extends Model {
     var excel = Excel.decodeBytes(bytes);
 
     excel.save(fileName: 'template.xlsx');
+    onSuccess();
+  }
+
+  void createTemplateForMenu({
+    required String filepath,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    ByteData data = await rootBundle.load(filepath);
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+
+    excel.save(fileName: 'template_menu.xlsx');
     onSuccess();
   }
 
