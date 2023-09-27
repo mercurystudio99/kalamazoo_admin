@@ -16,6 +16,11 @@ class _AmenitiesState extends State<Amenities> {
 
   final _nameController = TextEditingController();
   final _logoController = TextEditingController();
+  final _typeController = TextEditingController();
+
+  void _reloadData() {
+    _getAmenities();
+  }
 
   void _getAmenities() {
     AppModel().getAmenities(
@@ -93,6 +98,29 @@ class _AmenitiesState extends State<Amenities> {
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 2,
           child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: _typeController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  hintText: "Enter amenity type.",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  prefixIcon: const Icon(Icons.category),
+                ),
+                validator: (type) {
+                  if (type?.isEmpty ?? true) {
+                    return "Please enter an amenity type.";
+                  }
+                  return null;
+                },
+              ))),
+    ));
+    editView.add(Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Padding(
             padding: const EdgeInsets.all(10),
             child: DefaultButton(
               child:
@@ -100,12 +128,15 @@ class _AmenitiesState extends State<Amenities> {
               onPressed: () {
                 if (_nameController.text.trim() == '') return;
                 if (_logoController.text.trim() == '') return;
+                if (_typeController.text.trim() == '') return;
                 AppModel().setAmenities(
                     name: _nameController.text.trim(),
                     logo: _logoController.text.trim(),
+                    type: _typeController.text.trim(),
                     onSuccess: () {
                       _nameController.text = '';
                       _logoController.text = '';
+                      _typeController.text = '';
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Success!')),
                       );
@@ -126,11 +157,16 @@ class _AmenitiesState extends State<Amenities> {
                 padding: const EdgeInsets.all(10),
                 child: Text(amenities[i][AMENITY_NAME]),
               ),
+              subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(amenities[i][AMENITY_TYPE] ?? '')),
               trailing: IconButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            AmenityEdit(id: amenities[i][AMENITY_ID])));
+                        builder: (context) => AmenityEdit(
+                            id: amenities[i][AMENITY_ID],
+                            reloadData: _reloadData)));
+                    _reloadData();
                   },
                   icon: const Icon(Icons.edit)),
             )),

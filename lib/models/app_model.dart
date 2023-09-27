@@ -308,12 +308,14 @@ class AppModel extends Model {
   void setAmenities(
       {required String name,
       required String logo,
+      required String type,
       required VoidCallback onSuccess}) async {
     final docRef = _firestore.collection(C_AMENITIES).doc();
     await docRef.set({
       AMENITY_ID: docRef.id,
       AMENITY_NAME: name,
       AMENITY_LOGO: logo,
+      AMENITY_TYPE: type,
     });
     onSuccess();
   }
@@ -322,11 +324,13 @@ class AppModel extends Model {
       {required String id,
       required String name,
       required String logo,
+      required String type,
       required VoidCallback onSuccess}) async {
     final docRef = _firestore.collection(C_AMENITIES).doc(id);
     await docRef.update({
       AMENITY_NAME: name,
       AMENITY_LOGO: logo,
+      AMENITY_TYPE: type,
     });
     onSuccess();
   }
