@@ -153,6 +153,7 @@ class AppModel extends Model {
       required String state,
       required String url,
       required String zip,
+      required bool brand,
       required String topmenu,
       required VoidCallback onSuccess}) async {
     final docRef = _firestore.collection(globals.restaurantType).doc(id);
@@ -165,6 +166,7 @@ class AppModel extends Model {
       RESTAURANT_STATE: state,
       RESTAURANT_URL: url,
       RESTAURANT_ZIP: zip,
+      RESTAURANT_BRAND: brand,
       RESTAURANT_CATEGORY: topmenu
     });
     onSuccess();

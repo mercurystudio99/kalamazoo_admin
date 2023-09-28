@@ -39,6 +39,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
   PlatformFile? _imageFile;
   String _imageLink = '';
   String _selectedTopMenu = '';
+  bool _brand = false;
 
   Future getImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -106,6 +107,9 @@ class _RestaurantEditState extends State<RestaurantEdit> {
       _zipController.text = info[RESTAURANT_ZIP];
       if (info[RESTAURANT_CATEGORY] != null) {
         _selectedTopMenu = info[RESTAURANT_CATEGORY];
+      }
+      if (info[RESTAURANT_BRAND] != null) {
+        _brand = info[RESTAURANT_BRAND];
       }
       setState(() {});
     });
@@ -464,6 +468,51 @@ class _RestaurantEditState extends State<RestaurantEdit> {
               ))),
     ));
     editView.add(Center(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.shade400,
+                          blurRadius: 5,
+                          spreadRadius: 1),
+                    ],
+                  ),
+                  child: ColoredBox(
+                      color: Colors.white,
+                      child: Transform.scale(
+                        scale: 1.3,
+                        child: Checkbox(
+                          side: const BorderSide(color: Colors.white),
+                          checkColor: Colors.white,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return Colors.blueAccent;
+                            }
+                            return Colors.blueAccent;
+                          }),
+                          value: _brand,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _brand = value!;
+                            });
+                          },
+                        ),
+                      )),
+                ),
+                const SizedBox(width: 10),
+                const Text('Brand?')
+              ]),
+            ))));
+    editView.add(Center(
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 2,
           height: 70,
@@ -503,6 +552,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
                     state: _stateController.text.trim(),
                     url: _urlController.text.trim(),
                     zip: _zipController.text.trim(),
+                    brand: _brand,
                     topmenu: _selectedTopMenu,
                     onSuccess: () {
                       ScaffoldMessenger.of(context).showSnackBar(
