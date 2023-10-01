@@ -152,13 +152,6 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     );
   }
 
-  // void _getTemp() {
-  //   AppModel().getTemp(
-  //     onSuccess: () {},
-  //     onEmpty: () {},
-  //   );
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -166,7 +159,6 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     _getFoods();
     _getAmenities();
     _getTopMenu();
-    // _getTemp();
   }
 
   @override
@@ -611,8 +603,29 @@ class _RestaurantEditState extends State<RestaurantEdit> {
           SizedBox(width: MediaQuery.of(context).size.width / 2, height: 100),
     ));
 
+    List<String> amenityCategories = [];
+    for (var amenity in amenities) {
+      if (!amenityCategories.contains(amenity[AMENITY_TYPE]) &&
+          amenity[AMENITY_TYPE] != null &&
+          amenity[AMENITY_TYPE].toString().isNotEmpty) {
+        amenityCategories.add(amenity[AMENITY_TYPE]);
+      }
+    }
+
     List<Widget> amenitiesView = [];
-    amenitiesView.add(_listing());
+    for (var type in amenityCategories) {
+      amenitiesView.add(Center(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(type,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w800, fontSize: 20)))),
+      ));
+
+      amenitiesView.add(_listing(type));
+    }
     amenitiesView.add(Center(
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 3,
@@ -655,7 +668,7 @@ class _RestaurantEditState extends State<RestaurantEdit> {
     );
   }
 
-  Widget _listing() {
+  Widget _listing(String type) {
     Size size = MediaQuery.of(context).size;
     int length = 30;
     double itemWidth = 300;
@@ -669,58 +682,62 @@ class _RestaurantEditState extends State<RestaurantEdit> {
       length = 12;
     }
 
-    List<Widget> lists = amenities.map((item) {
-      return SizedBox(
-          width: itemWidth,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Row(children: [
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.shade400,
-                        blurRadius: 5,
-                        spreadRadius: 1),
-                  ],
-                ),
-                child: ColoredBox(
-                    color: Colors.white,
-                    child: Transform.scale(
-                      scale: 1.3,
-                      child: Checkbox(
-                        side: const BorderSide(color: Colors.white),
-                        checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
+    List<Widget> lists = [];
+    for (var item in amenities) {
+      if (item[AMENITY_TYPE] != null && item[AMENITY_TYPE].toString() == type) {
+        lists.add(SizedBox(
+            width: itemWidth,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Row(children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.shade400,
+                          blurRadius: 5,
+                          spreadRadius: 1),
+                    ],
+                  ),
+                  child: ColoredBox(
+                      color: Colors.white,
+                      child: Transform.scale(
+                        scale: 1.3,
+                        child: Checkbox(
+                          side: const BorderSide(color: Colors.white),
+                          checkColor: Colors.white,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return Colors.blueAccent;
+                            }
                             return Colors.blueAccent;
-                          }
-                          return Colors.blueAccent;
-                        }),
-                        value: _isCheckedAmenities[item[AMENITY_ID]],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _isCheckedAmenities[item[AMENITY_ID]] = value!;
-                          });
-                        },
-                      ),
-                    )),
-              ),
-              const SizedBox(width: 5),
-              Image.asset(
-                'assets/images/amenities/icon (${item[AMENITY_LOGO]}).png',
-              ),
-              const SizedBox(width: 5),
-              Text(item[AMENITY_NAME].toString().length < length
-                  ? item[AMENITY_NAME]
-                  : '${item[AMENITY_NAME].toString().substring(0, length - 2)}..')
-            ]),
-          ));
-    }).toList();
+                          }),
+                          value: _isCheckedAmenities[item[AMENITY_ID]],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isCheckedAmenities[item[AMENITY_ID]] = value!;
+                            });
+                          },
+                        ),
+                      )),
+                ),
+                const SizedBox(width: 5),
+                Image.asset(
+                  'assets/images/amenities/icon (${item[AMENITY_LOGO]}).png',
+                ),
+                const SizedBox(width: 5),
+                Text(item[AMENITY_NAME].toString().length < length
+                    ? item[AMENITY_NAME]
+                    : '${item[AMENITY_NAME].toString().substring(0, length - 2)}..')
+              ]),
+            )));
+      }
+    }
+
     int rowCount = lists.length ~/ 2;
     List<Widget> rowList = [];
     for (int i = 0; i < rowCount + 1; i++) {
