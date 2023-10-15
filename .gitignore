@@ -46,3 +46,4 @@ app.*.map.json
 
 #firebase configure
 firebase_options.dart
+key.dart

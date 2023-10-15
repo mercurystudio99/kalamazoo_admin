@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/datas/app_info.dart';
 import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
+import 'package:kalamazoo_app_dashboard/key.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
@@ -409,7 +410,7 @@ class AppModel extends Model {
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=',
+        'Authorization': 'key=$firebaseServerKey',
         // 'Authorization': 'key=${AppModel().appInfo!.firebaseServerKey}',
       },
       body: jsonEncode(
@@ -427,7 +428,9 @@ class AppModel extends Model {
             'n_message': nBody,
             'status': 'done'
           },
-          'to': '/topics/$NOTIFY_USERS',
+          'to':
+              'fgwvAmmxQBO0uL6e0GpKH6:APA91bGuPVRE1QpuA08h5qPiVq32Aj44dLSZ3IKONr4rPICChSWu2Jbt1HYgtNW3_WI3dRATFWq52xzdBwhI-nyOsFOox4nVk8siYBHc1MZooUqG-k4r4VS17a1CRy5hrgR6lw--sbJu',
+          // 'to': '/topics/$NOTIFY_USERS',
         },
       ),
     )
