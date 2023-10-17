@@ -885,4 +885,35 @@ class AppModel extends Model {
     });
     onSuccess();
   }
+
+  void getDailySpecial({
+    required Function(List<Map<String, dynamic>>) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    final snapshots = await _firestore
+        .collection(C_DAILYSPECIAL)
+        .orderBy(DAILYSPECIAL_ACTIVE, descending: false)
+        .get();
+    if (snapshots.docs.isEmpty) {
+      onEmpty();
+    } else {
+      List<Map<String, dynamic>> list = [];
+      for (var element in snapshots.docs) {
+        list.add(element.data());
+      }
+      onSuccess(list);
+    }
+  }
+
+  void publishDailySpecial({
+    required String id,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+  }) async {
+    final docRef = _firestore.collection(C_DAILYSPECIAL).doc(id);
+    await docRef.update({
+      DAILYSPECIAL_ACTIVE: true,
+    });
+    onSuccess();
+  }
 }
