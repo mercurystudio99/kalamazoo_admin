@@ -58,6 +58,7 @@ const String USER_JOB_TITLE = "user_job_title";
 const String USER_BIO = "user_bio";
 const String USER_PHONE_NUMBER = "user_phone_number";
 const String USER_EMAIL = "user_email";
+const String USER_FCM_TOKEN = "user_fcm_token";
 const String USER_GALLERY = "user_gallery";
 const String USER_COUNTRY = "user_country";
 const String USER_LOCALITY = "user_locality";

@@ -11,6 +11,7 @@ class DailySpecial extends StatefulWidget {
 
 class _DailySpecialState extends State<DailySpecial> {
   static List<Map<String, dynamic>> dailyspecials = [];
+  static List<String> tokens = [];
 
   void _getDailySpecial() {
     AppModel().getDailySpecial(
@@ -22,10 +23,30 @@ class _DailySpecialState extends State<DailySpecial> {
     );
   }
 
+  void _getTokens() {
+    AppModel().getTokens(
+      onSuccess: (List<String> param) {
+        tokens = param;
+      },
+      onEmpty: () {},
+    );
+  }
+
+  void _sendNotification() {
+    for (var token in tokens) {
+      AppModel().sendPushNotification(
+        token: token,
+        onSuccess: () {},
+        onError: () {},
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getDailySpecial();
+    _getTokens();
   }
 
   @override
@@ -65,6 +86,7 @@ class _DailySpecialState extends State<DailySpecial> {
                                 id: dailyspecials[i][DAILYSPECIAL_ID],
                                 onSuccess: () {
                                   _getDailySpecial();
+                                  _sendNotification();
                                 },
                               );
                             },

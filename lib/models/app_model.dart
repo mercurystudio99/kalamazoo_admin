@@ -400,7 +400,8 @@ class AppModel extends Model {
 
   /// Send push notification method
   Future<void> sendPushNotification({
-    required String nBody,
+    String? nBody,
+    String? token,
     // VoidCallback functions
     required VoidCallback onSuccess,
     required VoidCallback onError,
@@ -416,8 +417,8 @@ class AppModel extends Model {
       body: jsonEncode(
         <String, dynamic>{
           'notification': <String, dynamic>{
-            'title': APP_NAME,
-            'body': nBody,
+            'title': 'Bestlocaleats',
+            'body': nBody ?? 'Daily Special',
             'color': '#F50057',
             'sound': "default"
           },
@@ -428,8 +429,7 @@ class AppModel extends Model {
             'n_message': nBody,
             'status': 'done'
           },
-          'to':
-              'fgwvAmmxQBO0uL6e0GpKH6:APA91bGuPVRE1QpuA08h5qPiVq32Aj44dLSZ3IKONr4rPICChSWu2Jbt1HYgtNW3_WI3dRATFWq52xzdBwhI-nyOsFOox4nVk8siYBHc1MZooUqG-k4r4VS17a1CRy5hrgR6lw--sbJu',
+          'to': token ?? '',
           // 'to': '/topics/$NOTIFY_USERS',
         },
       ),
@@ -900,6 +900,24 @@ class AppModel extends Model {
       List<Map<String, dynamic>> list = [];
       for (var element in snapshots.docs) {
         list.add(element.data());
+      }
+      onSuccess(list);
+    }
+  }
+
+  void getTokens({
+    required Function(List<String>) onSuccess,
+    required VoidCallback onEmpty,
+  }) async {
+    final snapshots = await _firestore.collection(C_USERS).get();
+    if (snapshots.docs.isEmpty) {
+      onEmpty();
+    } else {
+      List<String> list = [];
+      for (var element in snapshots.docs) {
+        if (element.data()[USER_FCM_TOKEN] != null) {
+          list.add(element.data()[USER_FCM_TOKEN]);
+        }
       }
       onSuccess(list);
     }
