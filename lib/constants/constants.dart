@@ -41,6 +41,7 @@ const String C_WINERIES = "Wineries";
 const String C_BREWERIES = "Breweries";
 const String C_TOPMENU = "TopMenus";
 const String C_DAILYSPECIAL = "DailySpecial";
+const String C_EVENTS = "Events";
 const String C_FLAGGED_USERS = "FlaggedUsers";
 const String C_C_MENU = "Menu";
 
@@ -123,3 +124,10 @@ const String DAILYSPECIAL_ID = "id";
 const String DAILYSPECIAL_DESC = "description";
 const String DAILYSPECIAL_IMAGE_LINK = "image_link";
 const String DAILYSPECIAL_ACTIVE = "active";
+
+const String EVENT_ID = "id";
+const String EVENT_TITLE = "title";
+const String EVENT_DESC = "description";
+const String EVENT_YEAR = "year";
+const String EVENT_MONTH = "month";
+const String EVENT_DATE = "date";

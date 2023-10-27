@@ -934,4 +934,76 @@ class AppModel extends Model {
     });
     onSuccess();
   }
+
+  void getEventBanners({
+    required Function(List<String>) onSuccess,
+  }) async {
+    List<String> banners = [];
+    final snapshots =
+        await _firestore.collection(C_EVENTS).doc('banners').get();
+    if (snapshots.data()!.isNotEmpty) {
+      for (var item in snapshots.data()!['banners']) {
+        banners.add(item);
+      }
+    }
+    onSuccess(banners);
+  }
+
+  void setEventBanners({
+    required String imageUrl,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    List<String> banners = [];
+    final snapshots =
+        await _firestore.collection(C_EVENTS).doc('banners').get();
+    if (snapshots.data()!.isNotEmpty) {
+      for (var item in snapshots.data()!['banners']) {
+        banners.add(item);
+      }
+    }
+    banners.add(imageUrl);
+    final docRef = _firestore.collection(C_EVENTS).doc('banners');
+    await docRef.update({
+      'banners': banners,
+    });
+    onSuccess();
+  }
+
+  void setEvent({
+    required String title,
+    required String desc,
+    required String year,
+    required String month,
+    required String date,
+    // callback functions
+    required VoidCallback onSuccess,
+  }) async {
+    final docRef = _firestore.collection(C_EVENTS).doc();
+    await docRef.set({
+      EVENT_ID: docRef.id,
+      EVENT_TITLE: title,
+      EVENT_DESC: desc,
+      EVENT_YEAR: year,
+      EVENT_MONTH: month,
+      EVENT_DATE: date,
+    });
+    onSuccess();
+  }
+
+  void updateEvent({
+    required String id,
+    required String title,
+    required String desc,
+    // VoidCallback functions
+    required VoidCallback onSuccess,
+  }) async {
+    final docRef = _firestore.collection(C_EVENTS).doc(id);
+    await docRef.update({
+      EVENT_TITLE: title,
+      EVENT_DESC: desc,
+    });
+    onSuccess();
+  }
 }

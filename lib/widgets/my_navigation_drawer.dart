@@ -3,6 +3,7 @@ import 'package:kalamazoo_app_dashboard/screens/admin_profile.dart';
 import 'package:kalamazoo_app_dashboard/screens/dailyspecial.dart';
 import 'package:kalamazoo_app_dashboard/screens/dashboard.dart';
 import 'package:kalamazoo_app_dashboard/screens/category.dart';
+import 'package:kalamazoo_app_dashboard/screens/event.dart';
 import 'package:kalamazoo_app_dashboard/screens/food_category.dart';
 import 'package:kalamazoo_app_dashboard/screens/amenities.dart';
 import 'package:kalamazoo_app_dashboard/screens/push_notifications.dart';
@@ -91,6 +92,16 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
               // Go to Daily Special screen
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const DailySpecial()));
+            },
+          ),
+          const Divider(height: 0),
+          ListTile(
+            leading: const Icon(Icons.event),
+            title: Text("Event", style: _menuTextStyle),
+            onTap: () {
+              // Go to Event screen
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => const Event()));
             },
           ),
           const Divider(height: 0),
