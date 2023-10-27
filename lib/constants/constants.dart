@@ -131,3 +131,4 @@ const String EVENT_DESC = "description";
 const String EVENT_YEAR = "year";
 const String EVENT_MONTH = "month";
 const String EVENT_DATE = "date";
+const String EVENT_FULL_DATE = "fulldate";

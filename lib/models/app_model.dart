@@ -977,6 +977,7 @@ class AppModel extends Model {
     required String year,
     required String month,
     required String date,
+    required DateTime fulldate,
     // callback functions
     required VoidCallback onSuccess,
   }) async {
@@ -988,6 +989,7 @@ class AppModel extends Model {
       EVENT_YEAR: year,
       EVENT_MONTH: month,
       EVENT_DATE: date,
+      EVENT_FULL_DATE: fulldate,
     });
     onSuccess();
   }

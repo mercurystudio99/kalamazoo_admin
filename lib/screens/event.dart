@@ -52,6 +52,23 @@ class _EventState extends State<Event> {
     );
   }
 
+  void _saveEvent(
+      {required String title,
+      required String desc,
+      required DateTime fulldate,
+      required VoidCallback onCallback}) {
+    AppModel().setEvent(
+        title: title,
+        desc: desc,
+        year: fulldate.year.toString(),
+        month: fulldate.month.toString(),
+        date: fulldate.day.toString(),
+        fulldate: fulldate,
+        onSuccess: () {
+          onCallback();
+        });
+  }
+
   Future getImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.any,
@@ -134,30 +151,36 @@ class _EventState extends State<Event> {
                       );
                       return;
                     } else {
-                      setState(() {
-                        if (_kEventSource[_selectedDay] != null) {
-                          _kEventSource[_selectedDay]?.add(EventItem(
-                              eventTitle: _titleController.text,
-                              eventDesc: _descController.text,
-                              eventColor: Colors.primaries[
-                                  Random().nextInt(Colors.primaries.length)]));
-                        } else {
-                          _kEventSource[_selectedDay!] = [
-                            EventItem(
-                                eventTitle: _titleController.text,
-                                eventDesc: _descController.text,
-                                eventColor: Colors.primaries[
-                                    Random().nextInt(Colors.primaries.length)])
-                          ];
-                        }
-                        kEvents.addAll(_kEventSource);
-                      });
+                      _saveEvent(
+                          title: _titleController.text,
+                          desc: _descController.text,
+                          fulldate: _selectedDay!,
+                          onCallback: () {
+                            setState(() {
+                              if (_kEventSource[_selectedDay] != null) {
+                                _kEventSource[_selectedDay]?.add(EventItem(
+                                    eventTitle: _titleController.text,
+                                    eventDesc: _descController.text,
+                                    eventColor: Colors.primaries[Random()
+                                        .nextInt(Colors.primaries.length)]));
+                              } else {
+                                _kEventSource[_selectedDay!] = [
+                                  EventItem(
+                                      eventTitle: _titleController.text,
+                                      eventDesc: _descController.text,
+                                      eventColor: Colors.primaries[Random()
+                                          .nextInt(Colors.primaries.length)])
+                                ];
+                              }
+                              kEvents.addAll(_kEventSource);
+                            });
 
-                      _titleController.clear();
-                      _descController.clear();
+                            _titleController.clear();
+                            _descController.clear();
 
-                      Navigator.pop(context);
-                      return;
+                            Navigator.pop(context);
+                            return;
+                          });
                     }
                   },
                   child: const Text('Add'),
@@ -394,6 +417,36 @@ class _EventState extends State<Event> {
                 },
               ),
             ),
+            SizedBox(
+              height: 200,
+              child: ValueListenableBuilder<List<EventItem>>(
+                valueListenable: _selectedEvents,
+                builder: (context, value, _) {
+                  return ListView.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) {
+                      var splitted = value[index].toString().split('&@&');
+                      return Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 4,
+                          ),
+                          decoration:
+                              const BoxDecoration(color: Colors.black38),
+                          child: Row(children: [
+                            Container(
+                                width: 5, height: 30, color: Colors.black),
+                            const SizedBox(width: 20),
+                            Column(children: [
+                              Text(splitted[0]),
+                              Text(splitted[1])
+                            ])
+                          ]));
+                    },
+                  );
+                },
+              ),
+            )
           ],
         ));
   }
@@ -433,5 +486,5 @@ class EventItem {
       required this.eventColor});
 
   @override
-  String toString() => eventTitle;
+  String toString() => eventTitle + '&@&' + eventDesc;
 }
