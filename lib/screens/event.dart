@@ -469,15 +469,25 @@ class _EventState extends State<Event> {
                           ),
                           decoration:
                               const BoxDecoration(color: Colors.black38),
-                          child: Row(children: [
-                            Container(
-                                width: 5, height: 30, color: Colors.black),
-                            const SizedBox(width: 20),
-                            Column(children: [
-                              Text(splitted[0]),
-                              Text(splitted[1])
-                            ])
-                          ]));
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    width: 5, height: 50, color: Colors.black),
+                                const SizedBox(width: 20),
+                                Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        splitted[0],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(splitted[1])
+                                    ])
+                              ]));
                     },
                   );
                 },
