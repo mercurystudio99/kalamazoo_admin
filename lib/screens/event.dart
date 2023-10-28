@@ -1,3 +1,4 @@
+import 'package:kalamazoo_app_dashboard/constants/constants.dart';
 import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
 import 'dart:collection';
@@ -35,7 +36,7 @@ class _EventState extends State<Event> {
 
   late final ValueNotifier<List<EventItem>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = DateTime(kToday.year, kToday.month, kToday.day);
   DateTime? _selectedDay;
 
   late final Map<DateTime, List<EventItem>> _kEventSource = {};
@@ -47,6 +48,38 @@ class _EventState extends State<Event> {
     AppModel().getEventBanners(
       onSuccess: (List<String> param) {
         banners = param;
+        setState(() {});
+      },
+    );
+  }
+
+  void _getEvents(DateTime day) {
+    AppModel().getEventForMonth(
+      year: day.year.toString(),
+      month: day.month.toString(),
+      onSuccess: (List<Map<String, dynamic>> param) {
+        _kEventSource.clear();
+        for (var element in param) {
+          var date = DateTime.fromMillisecondsSinceEpoch(
+              element[EVENT_MILLISECONDS],
+              isUtc: true);
+          if (_kEventSource[date] != null) {
+            _kEventSource[date]?.add(EventItem(
+                eventTitle: element[EVENT_TITLE],
+                eventDesc: element[EVENT_DESC],
+                eventColor: Colors
+                    .primaries[Random().nextInt(Colors.primaries.length)]));
+          } else {
+            _kEventSource[date] = [
+              EventItem(
+                  eventTitle: element[EVENT_TITLE],
+                  eventDesc: element[EVENT_DESC],
+                  eventColor: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)])
+            ];
+          }
+          kEvents.addAll(_kEventSource);
+        }
         setState(() {});
       },
     );
@@ -193,6 +226,7 @@ class _EventState extends State<Event> {
   void initState() {
     super.initState();
     _getBanners();
+    _getEvents(_focusedDay);
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
@@ -202,6 +236,7 @@ class _EventState extends State<Event> {
     _selectedEvents.dispose();
     _titleController.dispose();
     _descController.dispose();
+    kEvents.clear();
     super.dispose();
   }
 
@@ -403,6 +438,7 @@ class _EventState extends State<Event> {
               },
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
+                _getEvents(_focusedDay);
               },
               calendarBuilders: CalendarBuilders(
                 singleMarkerBuilder: (context, date, event) {

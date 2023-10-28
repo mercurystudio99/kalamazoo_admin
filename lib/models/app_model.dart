@@ -971,6 +971,27 @@ class AppModel extends Model {
     onSuccess();
   }
 
+  void getEventForMonth({
+    required String year,
+    required String month,
+    required Function(List<Map<String, dynamic>>) onSuccess,
+  }) async {
+    final snapshots = await _firestore
+        .collection(C_EVENTS)
+        .where(EVENT_YEAR, isEqualTo: year)
+        .where(EVENT_MONTH, isEqualTo: month)
+        .get();
+    if (snapshots.docs.isEmpty) {
+      onSuccess([]);
+    } else {
+      List<Map<String, dynamic>> list = [];
+      for (var element in snapshots.docs) {
+        list.add(element.data());
+      }
+      onSuccess(list);
+    }
+  }
+
   void setEvent({
     required String title,
     required String desc,
@@ -989,7 +1010,7 @@ class AppModel extends Model {
       EVENT_YEAR: year,
       EVENT_MONTH: month,
       EVENT_DATE: date,
-      EVENT_FULL_DATE: fulldate,
+      EVENT_MILLISECONDS: fulldate.millisecondsSinceEpoch,
     });
     onSuccess();
   }
