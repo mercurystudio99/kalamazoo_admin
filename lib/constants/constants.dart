@@ -2,6 +2,19 @@
 
 import 'package:flutter/material.dart';
 
+const int L_START_HOUR = 8;
+const int L_START_MINUTE = 0;
+const int L_END_HOUR = 21;
+const int L_END_MINUTE = 0;
+
+const String L_MONDAY = "Monday";
+const String L_TUESDAY = "Tuesday";
+const String L_WEDNESDAY = "Wednesday";
+const String L_THURSDAY = "Thursday";
+const String L_FRIDAY = "Friday";
+const String L_SATURDAY = "Saturday";
+const String L_SUNDAY = "Sunday";
+
 /// APP INFO CONSTANTS ///
 ///
 const String APP_NAME = "Kalamazoo App Admin Panel";
@@ -100,6 +113,13 @@ const String RESTAURANT_PHONE = "phone";
 const String RESTAURANT_STATE = "state";
 const String RESTAURANT_URL = "url";
 const String RESTAURANT_ZIP = "zip";
+const String RESTAURANT_SCHEDULE = "schedule";
+const String RESTAURANT_SCHEDULE_DAY = "day";
+const String RESTAURANT_SCHEDULE_STARTHOUR = "startHour";
+const String RESTAURANT_SCHEDULE_STARTMINUTE = "startMinute";
+const String RESTAURANT_SCHEDULE_ENDHOUR = "endHour";
+const String RESTAURANT_SCHEDULE_ENDMINUTE = "endMinute";
+const String RESTAURANT_SCHEDULE_ISWORKINGDAY = "isWorkingDay";
 
 const String MENU_ID = "id";
 const String MENU_NAME = "name";
