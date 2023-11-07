@@ -3,6 +3,7 @@ import 'package:kalamazoo_app_dashboard/models/app_model.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_button.dart';
 import 'package:kalamazoo_app_dashboard/widgets/default_card_border.dart';
 import 'package:kalamazoo_app_dashboard/widgets/show_scaffold_msg.dart';
+import 'package:kalamazoo_app_dashboard/utils/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -109,13 +110,19 @@ class _RestaurantState extends State<Restaurant> {
       {required VoidCallback onCallback,
       required Function(String) onError}) async {
     if (_restaurantImage != null) {
+      String service = '';
+      if (globals.restaurantType == C_RESTAURANTS) {
+        service = 'restaurant';
+      }
+      if (globals.restaurantType == C_BREWERIES) service = 'brewery';
+      if (globals.restaurantType == C_WINERIES) service = 'winery';
+      if (service.isEmpty) return;
+
       Uint8List? fileBytes = _restaurantImage!.bytes;
       String filename = DateTime.now().millisecondsSinceEpoch.toString() +
           _restaurantImage!.name;
-      var snapshot = await _storage
-          .ref()
-          .child('restaurant/$filename')
-          .putData(fileBytes!);
+      var snapshot =
+          await _storage.ref().child('$service/$filename').putData(fileBytes!);
 
       var url = await snapshot.ref.getDownloadURL();
 
